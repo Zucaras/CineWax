@@ -1,4 +1,4 @@
-package com.waxeados.cartelera.entity;
+package com.waxeados.CineWax.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
