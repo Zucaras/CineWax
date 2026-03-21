@@ -1,0 +1,75 @@
+services:
+
+  # ─────────────────────────────────────────
+  #  PostgreSQL
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: cinewax-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       cinewax
+      POSTGRES_USER:     cinewax_user
+      POSTGRES_PASSWORD: cinewax_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cinewax_user -d cinewax"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cinewax-net
+
+  # ─────────────────────────────────────────
+  #  pgAdmin — interfaz visual para PostgreSQL
+  # ─────────────────────────────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: cinewax-pgadmin
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL:    admin@cinewax.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    networks:
+      - cinewax-net
+
+  # ─────────────────────────────────────────
+  #  Spring Boot App
+  # ─────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cinewax-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL:                      jdbc:postgresql://postgres:5432/cinewax
+      SPRING_DATASOURCE_USERNAME:                 cinewax_user
+      SPRING_DATASOURCE_PASSWORD:                 cinewax_pass
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME:        org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM:               org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO:              update
+      SPRING_JPA_SHOW_SQL:                        true
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+    networks:
+      - cinewax-net
+
+volumes:
+  postgres_data:
+
+networks:
+  cinewax-net:
+    driver: bridge
