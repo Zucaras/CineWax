@@ -33,11 +33,11 @@ public class PeliculaService {
     @Transactional
     public Pelicula altaPelicula(PeliculaDTO dto) {
         if (peliculaRepository.existsByNameIgnoreCase(dto.getNombre())) {
-            throw new IllegalArgumentException("Ya existe una película con el nombre: " + dto.getNombre());
+            throw new IllegalArgumentException("** YA EXISTE PELICULA CON EL NOMBRE DE: " + dto.getNombre() + " **");
         }
 
         Genero genero = generoRepository.findById(dto.getIdGenero())
-                .orElseThrow(() -> new IllegalArgumentException("Género no encontrado con ID: " + dto.getIdGenero()));
+                .orElseThrow(() -> new IllegalArgumentException("** GENERO NO ENCONTRADO CON ID: " + dto.getIdGenero() + " **"));
 
         Pelicula pelicula = Pelicula.builder()
                 .nombre(dto.getNombre())
@@ -60,7 +60,7 @@ public class PeliculaService {
     @Transactional
     public void bajaPelicula(Integer idPelicula) {
         Pelicula pelicula = peliculaRepository.findById(idPelicula)
-                .orElseThrow(() -> new IllegalArgumentException("Película no encontrada con ID: " + idPelicula));
+                .orElseThrow(() -> new IllegalArgumentException("** PELICULA NO ENCONTRADA CON ID: " + idPelicula + " **"));
 
         // Eliminar horarios asociados primero
         horarioRepository.deleteByPelicula_IdPelicula(idPelicula);
@@ -76,16 +76,16 @@ public class PeliculaService {
     @Transactional
     public Pelicula modificarPelicula(Integer idPelicula, PeliculaDTO dto) {
         Pelicula pelicula = peliculaRepository.findById(idPelicula)
-                .orElseThrow(() -> new IllegalArgumentException("Película no encontrada con ID: " + idPelicula));
+                .orElseThrow(() -> new IllegalArgumentException("** PELICULA NO ENCONTRADA CON ID: " + idPelicula + " **"));
 
         // Verificar que el nuevo nombre no colisione con otra película
         if (!pelicula.getNombre().equalsIgnoreCase(dto.getNombre())
                 && peliculaRepository.existsByNameIgnoreCase(dto.getNombre())) {
-            throw new IllegalArgumentException("Ya existe otra película con el nombre: " + dto.getNombre());
+            throw new IllegalArgumentException("** YA EXISTE UNA PELICULA CON EL NOMBRE: " + dto.getNombre()+ " **");
         }
 
         Genero genero = generoRepository.findById(dto.getIdGenero())
-                .orElseThrow(() -> new IllegalArgumentException("Género no encontrado con ID: " + dto.getIdGenero()));
+                .orElseThrow(() -> new IllegalArgumentException("** GENERO NO ENCONTRADO CON ID: " + dto.getIdGenero()+ " **"));
 
         pelicula.setNombre(dto.getNombre());
         pelicula.setDirector(dto.getDirector());
@@ -104,7 +104,7 @@ public class PeliculaService {
      */
     public Pelicula consultarPelicula(Integer idPelicula) {
         return peliculaRepository.findById(idPelicula)
-                .orElseThrow(() -> new IllegalArgumentException("Película no encontrada con ID: " + idPelicula));
+                .orElseThrow(() -> new IllegalArgumentException("** PELICULA NO ENCONTRADA CON ID: " + idPelicula + " **"));
     }
 
     /**

@@ -588,7 +588,7 @@ public class ConsoleRunner implements CommandLineRunner {
             try {
                 return LocalDate.parse(scanner.nextLine().trim(), fmt);
             } catch (DateTimeParseException e) {
-                System.out.print("Formato invalido. Use dd/MM/yyyy: ");
+                System.out.print("** FORMATO INVALIDO ** | Use dd/MM/yyyy: ");
             }
         }
     }
@@ -599,7 +599,7 @@ public class ConsoleRunner implements CommandLineRunner {
             try {
                 return LocalTime.parse(scanner.nextLine().trim(), fmt);
             } catch (DateTimeParseException e) {
-                System.out.print("*Formato invalido. Use HH:mm: ");
+                System.out.print("** FORMATO INVALIDO ** | Use HH:mm: ");
             }
         }
     }
