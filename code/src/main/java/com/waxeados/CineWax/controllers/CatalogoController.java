@@ -2,6 +2,7 @@ package com.waxeados.CineWax.controllers;
 
 import com.waxeados.CineWax.dto.*;
 import com.waxeados.CineWax.services.CatalogoService;
+import com.waxeados.CineWax.mappers.CatalogoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +16,13 @@ import java.util.List;
 public class CatalogoController {
 
     private final CatalogoService catalogoService;
+    private final CatalogoMapper catalogoMapper; // Mapper inyectado
 
     /** GET /api/catalogo/estados */
     @GetMapping("/estados")
     public ResponseEntity<ApiResponse<?>> listarEstados() {
         List<EstadoDTO> data = catalogoService.listarEstados().stream()
-                .map(e -> EstadoDTO.builder()
-                        .idEstado(e.getIdEstado())
-                        .nombreEstado(e.getNombreEstado())
-                        .build())
+                .map(catalogoMapper::toEstadoDTO)
                 .toList();
         return ResponseEntity.ok(ApiResponse.ok("Estados disponibles", data));
     }
@@ -32,11 +31,7 @@ public class CatalogoController {
     @GetMapping("/municipios/{idEstado}")
     public ResponseEntity<ApiResponse<?>> listarMunicipios(@PathVariable String idEstado) {
         List<MunicipioDTO> data = catalogoService.listarMunicipios(idEstado).stream()
-                .map(m -> MunicipioDTO.builder()
-                        .idMunicipio(m.getIdMunicipio())
-                        .letraMunicipio(m.getLetraMunicipio().toString())
-                        .nombreMunicipio(m.getNombreMunicipio())
-                        .build())
+                .map(catalogoMapper::toMunicipioDTO)
                 .toList();
         return ResponseEntity.ok(ApiResponse.ok("Municipios del estado " + idEstado, data));
     }
@@ -45,10 +40,7 @@ public class CatalogoController {
     @GetMapping("/generos")
     public ResponseEntity<ApiResponse<?>> listarGeneros() {
         List<GeneroDTO> data = catalogoService.listarGeneros().stream()
-                .map(g -> GeneroDTO.builder()
-                        .idGenero(g.getIdGenero())
-                        .nombreGenero(g.getNombreGenero())
-                        .build())
+                .map(catalogoMapper::toGeneroDTO)
                 .toList();
         return ResponseEntity.ok(ApiResponse.ok("Géneros disponibles", data));
     }
@@ -57,11 +49,7 @@ public class CatalogoController {
     @GetMapping("/salas/{idMunicipio}")
     public ResponseEntity<ApiResponse<?>> listarSalas(@PathVariable String idMunicipio) {
         List<SalaDTO> data = catalogoService.listarSalas(idMunicipio).stream()
-                .map(s -> SalaDTO.builder()
-                        .idSala(s.getIdSala())
-                        .numeroSala(s.getNumeroSala())
-                        .municipio(s.getMunicipio().getNombreMunicipio())
-                        .build())
+                .map(catalogoMapper::toSalaDTO)
                 .toList();
         return ResponseEntity.ok(ApiResponse.ok("Salas del municipio", data));
     }
