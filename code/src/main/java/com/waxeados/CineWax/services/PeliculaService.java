@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class MovieService {
+public class PeliculaService {
 
     private final PeliculaRepository peliculaRepository;
     private final GeneroRepository generoRepository;
@@ -201,23 +201,4 @@ public class MovieService {
 
     // ==================== HELPERS ====================
 
-    /**
-     * Convierte un HorarioCartelera a CarteleraDTO para la respuesta.
-     */
-    public CarteleraDTO toCarteleraDTO(HorarioCartelera h) {
-        return CarteleraDTO.builder()
-                .idHorario(h.getIdHorario())
-                .nombrePelicula(h.getPelicula().getNombre())
-                .director(h.getPelicula().getDirector())
-                .clasificacion(h.getPelicula().getClasificacion())
-                .duracionMin(h.getPelicula().getDuracionMin())
-                .genero(h.getPelicula().getGenero().getNombreGenero())
-                .numeroSala(h.getSala().getNumeroSala())
-                .fecha(h.getFechaProyeccion())
-                .horaInicio(h.getHoraInicio())
-                .horaFinEstimada(h.getHoraFinEstimada())
-                .municipio(h.getSala().getMunicipio().getNombreMunicipio())
-                .estado(h.getSala().getMunicipio().getEstado().getNombreEstado())
-                .build();
-    }
 }

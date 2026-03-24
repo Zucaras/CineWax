@@ -3,6 +3,8 @@ package com.waxeados.CineWax.services;
 import com.waxeados.CineWax.dto.CarteleraDTO;
 import com.waxeados.CineWax.dto.HorarioDTO;
 import com.waxeados.CineWax.entity.*;
+import com.waxeados.CineWax.exceptions.ScheduleOverlapException;
+import com.waxeados.CineWax.mappers.HorarioMapper;
 import com.waxeados.CineWax.respositories.*;
 import com.waxeados.CineWax.structures.Cola;
 import com.waxeados.CineWax.structures.QuickSort;
@@ -27,7 +29,7 @@ public class HorarioService {
     private final HorarioCarteleraRepository horarioRepository;
     private final PeliculaRepository peliculaRepository;
     private final SalaRepository salaRepository;
-    private final MovieService movieService;
+    private final HorarioMapper horarioMapper;
 
     // Cola para procesar solicitudes de horarios en orden
     private final Cola<HorarioDTO> colaSolicitudes = new Cola<>();
@@ -134,7 +136,7 @@ public class HorarioService {
 
         for (HorarioCartelera existente : existentes) {
             // Excluir el horario que se está modificando
-            if (excludeId != null && existente.getIdHorario().equals(excludeId)) {
+            if (existente.getIdHorario().equals(excludeId)) {
                 continue;
             }
 
@@ -147,7 +149,7 @@ public class HorarioService {
                     && nuevaHoraFin.isAfter(iniExistente);
 
             if (hayEmpalme) {
-                throw new IllegalArgumentException(
+                throw new ScheduleOverlapException(
                         String.format("Empalme detectado en sala %d, fecha %s. " +
                                         "El horario %s-%s se cruza con '%s' (%s-%s). " +
                                         "Recuerda que se necesitan 30 min entre películas.",
@@ -176,7 +178,7 @@ public class HorarioService {
         QuickSort.ordenar(horarios, ascendente);
 
         return horarios.stream()
-                .map(movieService::toCarteleraDTO)
+                .map(horarioMapper::toCarteleraDTO)
                 .collect(Collectors.toList());
     }
 
@@ -199,7 +201,7 @@ public class HorarioService {
         QuickSort.ordenar(filtrados, ascendente);
 
         return filtrados.stream()
-                .map(movieService::toCarteleraDTO)
+                .map(horarioMapper::toCarteleraDTO)
                 .collect(Collectors.toList());
     }
 
@@ -212,7 +214,7 @@ public class HorarioService {
         QuickSort.ordenar(horarios, true);
 
         return horarios.stream()
-                .map(movieService::toCarteleraDTO)
+                .map(horarioMapper::toCarteleraDTO)
                 .collect(Collectors.toList());
     }
 
