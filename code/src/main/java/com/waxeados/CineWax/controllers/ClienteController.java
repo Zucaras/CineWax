@@ -29,7 +29,7 @@ public class ClienteController {
         String rol = (String) session.getAttribute("rol");
         if (rol == null) {
             // El GlobalExceptionHandler atrapa esto y devuelve un 403 limpio
-            throw new SecurityException("No autenticado.");
+            throw new SecurityException("No autenticado");
         }
         return (String) session.getAttribute("username");
     }
@@ -45,7 +45,7 @@ public class ClienteController {
                 .map(p -> peliculaMapper.toPeliculaDetalle(p, horarioService.obtenerHorariosPelicula(p.getIdPelicula())))
                 .toList();
 
-        return ResponseEntity.ok(ApiResponse.ok("Búsqueda por nombre: " + q, data));
+        return ResponseEntity.ok(ApiResponse.ok("Busqueda por nombre: " + q, data));
     }
 
     @GetMapping("/buscar/clasificacion")
@@ -57,7 +57,7 @@ public class ClienteController {
                 .map(p -> peliculaMapper.toPeliculaDetalle(p, horarioService.obtenerHorariosPelicula(p.getIdPelicula())))
                 .toList();
 
-        return ResponseEntity.ok(ApiResponse.ok("Búsqueda por clasificación: " + c, data));
+        return ResponseEntity.ok(ApiResponse.ok("Busqueda por clasificacion: " + c, data));
     }
 
     @GetMapping("/buscar/genero")
@@ -69,7 +69,7 @@ public class ClienteController {
                 .map(p -> peliculaMapper.toPeliculaDetalle(p, horarioService.obtenerHorariosPelicula(p.getIdPelicula())))
                 .toList();
 
-        return ResponseEntity.ok(ApiResponse.ok("Búsqueda por género ID: " + id, data));
+        return ResponseEntity.ok(ApiResponse.ok("Busqueda por genero ID: " + id, data));
     }
 
     // ==================== 4. ORDENAR CARTELERA (QuickSort A/D) ====================
@@ -99,7 +99,7 @@ public class ClienteController {
         historialService.registrarAccion(username, "CONSULTAR_PELICULA", p.getNombre());
 
         List<CarteleraDTO> horarios = horarioService.obtenerHorariosPelicula(p.getIdPelicula());
-        return ResponseEntity.ok(ApiResponse.ok("Consulta exitosa", peliculaMapper.toPeliculaDetalle(p, horarios)));
+        return ResponseEntity.ok(ApiResponse.ok("** CONSUTA EXITOSA **", peliculaMapper.toPeliculaDetalle(p, horarios)));
     }
 
     // ==================== 6. CONSULTAR CARTELERA ====================
@@ -180,7 +180,7 @@ public class ClienteController {
                 .camino(camino)
                 .build();
 
-        return ResponseEntity.ok(ApiResponse.ok("Camino más corto (Floyd + recursividad)", data));
+        return ResponseEntity.ok(ApiResponse.ok("Camino mas corto (Floyd + recursividad)", data));
     }
 
     // ==================== HISTORIAL (Pila) ====================
@@ -198,8 +198,8 @@ public class ClienteController {
         HistorialNavegacionDTO anterior = historialService.regresar(username);
 
         if (anterior == null) {
-            return ResponseEntity.ok(ApiResponse.ok("No hay acciones anteriores"));
+            return ResponseEntity.ok(ApiResponse.ok("** NO HAY ACCIONES ANTERIORES **"));
         }
-        return ResponseEntity.ok(ApiResponse.ok("Acción anterior recuperada", anterior));
+        return ResponseEntity.ok(ApiResponse.ok("Accion anterior recuperada", anterior));
     }
 }
