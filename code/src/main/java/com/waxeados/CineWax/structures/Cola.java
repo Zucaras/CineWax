@@ -26,7 +26,7 @@ public class Cola<T> {
 
     /** Desencola y retorna el primer elemento. O(1) */
     public T dequeue() {
-        if (estaVacia()) throw new IllegalStateException("La cola está vacía");
+        if (estaVacia()) throw new IllegalStateException("** LA COLA ESTA VACIA **");
         T frente = datos.obtener(0);
         datos.eliminar(e -> e.equals(frente));
         return frente;
@@ -34,7 +34,7 @@ public class Cola<T> {
 
     /** Consulta el primer elemento sin desencolar. O(1) */
     public T peek() {
-        if (estaVacia()) throw new IllegalStateException("La cola está vacía");
+        if (estaVacia()) throw new IllegalStateException("** LA COLA ESTA VACIA **");
         return datos.obtener(0);
     }
 

@@ -27,7 +27,7 @@ public class AuthController {
         // Si hay error (ej. username repetido), el GlobalExceptionHandler lo atrapa
         Usuario usuario = userService.registrar(dto);
         return ResponseEntity.ok(
-                ApiResponse.ok("Usuario registrado exitosamente", usuarioMapper.toUsuarioDTO(usuario)));
+                ApiResponse.ok("** USUARIO REGISTRADO EXITOSAMENTE ", usuarioMapper.toUsuarioDTO(usuario) + " **"));
     }
 
     /**
@@ -46,7 +46,7 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(
-                ApiResponse.ok("Login exitoso", usuarioMapper.toUsuarioDTO(usuario)));
+                ApiResponse.ok("** LOGIN EXITOSO **", usuarioMapper.toUsuarioDTO(usuario)));
     }
 
     /**
@@ -57,16 +57,16 @@ public class AuthController {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             // Lanzamos la excepción para que el manejador global devuelva el error estructurado
-            throw new SecurityException("No autenticado");
+            throw new SecurityException("** NO AUTENTICADO **");
         }
 
         UsuarioDTO data = UsuarioDTO.builder()
                 .idUsuario(userId)
-                .username((String) session.getAttribute("username"))
+                .username((String) session.getAttribute("usuario"))
                 .rol((String) session.getAttribute("rol"))
                 .build();
 
-        return ResponseEntity.ok(ApiResponse.ok("Sesión activa", data));
+        return ResponseEntity.ok(ApiResponse.ok("** SESION ACTIVA **", data));
     }
 
     /**
@@ -75,6 +75,6 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(HttpSession session) {
         session.invalidate();
-        return ResponseEntity.ok(ApiResponse.ok("Sesión cerrada exitosamente"));
+        return ResponseEntity.ok(ApiResponse.ok("** SESION CERRADA EXITOSAMENTE **"));
     }
 }

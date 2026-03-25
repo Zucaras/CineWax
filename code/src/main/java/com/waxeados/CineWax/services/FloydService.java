@@ -80,7 +80,7 @@ public class FloydService {
     public int getDistancia(String idEstado, String origen, String destino) {
         FloydWarshall floyd = grafosPorEstado.get(idEstado);
         if (floyd == null) {
-            throw new IllegalArgumentException("No se encontró el grafo para el estado: " + idEstado);
+            throw new IllegalArgumentException("** NO SE ENCONTRO EL GRAFO PARA EL ESTADO: " + idEstado + " **");
         }
         return floyd.getDistancia(origen, destino);
     }
@@ -92,7 +92,7 @@ public class FloydService {
     public List<String> getCamino(String idEstado, String origen, String destino) {
         FloydWarshall floyd = grafosPorEstado.get(idEstado);
         if (floyd == null) {
-            throw new IllegalArgumentException("No se encontró el grafo para el estado: " + idEstado);
+            throw new IllegalArgumentException("** NO SE ENCONTRO EL GRAFO PARA EL ESTADO: " + idEstado + " **");
         }
         return floyd.getCamino(origen, destino);
     }
@@ -103,7 +103,7 @@ public class FloydService {
     public List<Map.Entry<String, Integer>> getMunicipiosCercanos(String idEstado, String idMunicipio) {
         FloydWarshall floyd = grafosPorEstado.get(idEstado);
         if (floyd == null) {
-            throw new IllegalArgumentException("No se encontró el grafo para el estado: " + idEstado);
+            throw new IllegalArgumentException("** NO SE ENCONTRO EL GRAFO PARA EL ESTADO: " + idEstado + " **");
         }
         return floyd.getMunicipiosCercanos(idMunicipio);
     }

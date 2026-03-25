@@ -42,7 +42,7 @@ public class CatalogoController {
         List<GeneroDTO> data = catalogoService.listarGeneros().stream()
                 .map(catalogoMapper::toGeneroDTO)
                 .toList();
-        return ResponseEntity.ok(ApiResponse.ok("Géneros disponibles", data));
+        return ResponseEntity.ok(ApiResponse.ok("Generos disponibles", data));
     }
 
     /** GET /api/catalogo/salas/{idMunicipio} */
