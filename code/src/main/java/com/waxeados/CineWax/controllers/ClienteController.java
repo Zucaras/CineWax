@@ -189,7 +189,7 @@ public class ClienteController {
     public ResponseEntity<ApiResponse<?>> obtenerHistorial(HttpSession session) {
         String username = validarCliente(session);
         List<HistorialNavegacionDTO> data = historialService.obtenerHistorial(username);
-        return ResponseEntity.ok(ApiResponse.ok("Historial de navegación (Pila)", data));
+        return ResponseEntity.ok(ApiResponse.ok("Historial de navegacion (Pila)", data));
     }
 
     @PostMapping("/historial/regresar")
