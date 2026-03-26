@@ -25,24 +25,24 @@ public class UserService {
     @Transactional
     public Usuario registrar(RegistroDTO dto) {
         if (usuarioRepository.existsByUsername(dto.getUsername())) {
-            throw new IllegalArgumentException("El username ya está en uso: " + dto.getUsername());
+            throw new IllegalArgumentException("** EL USUARIO YA ESTA EN USO **");
         }
 
         Usuario.Rol rol;
         try {
             rol = Usuario.Rol.valueOf(dto.getRol().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Rol inválido. Use ADMINISTRADOR o CLIENTE.");
+            throw new IllegalArgumentException("** ROL INVALIDO **");
         }
 
         Municipio municipio = null;
         if (rol == Usuario.Rol.ADMINISTRADOR) {
             if (dto.getIdMunicipio() == null || dto.getIdMunicipio().isBlank()) {
-                throw new IllegalArgumentException("El administrador debe tener un municipio asignado.");
+                throw new IllegalArgumentException("** EL ADMINISTRADOR DEBE TENER UN MUNICIPIO ASIGNADO **");
             }
             municipio = municipioRepository.findById(dto.getIdMunicipio())
                     .orElseThrow(() -> new IllegalArgumentException(
-                            "Municipio no encontrado: " + dto.getIdMunicipio()));
+                            "** MUNICIPIO NO ENCONTRADO: " + dto.getIdMunicipio() + " **"));
         }
 
         Usuario usuario = Usuario.builder()
@@ -60,10 +60,10 @@ public class UserService {
      */
     public Usuario login(LoginDTO dto) {
         Usuario usuario = usuarioRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado."));
+                .orElseThrow(() -> new IllegalArgumentException("** USUARIO NO ENCONTRADO **"));
 
         if (!passwordEncoder.matches(dto.getPassword(), usuario.getPasswordHash())) {
-            throw new IllegalArgumentException("Contraseña incorrecta.");
+            throw new IllegalArgumentException("** CONTRASEÑA INCORRECTA **");
         }
 
         return usuario;
@@ -74,7 +74,7 @@ public class UserService {
      */
     public Usuario obtenerPorId(Integer id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("** USUARIO NO ENCONTRADO CON ID: " + id+ " **"));
     }
 
     /**
@@ -82,6 +82,6 @@ public class UserService {
      */
     public Usuario obtenerPorUsername(String username) {
         return usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado: " + username));
+                .orElseThrow(() -> new IllegalArgumentException("** USUARIO NO ENCONTRADO: " + username+ " **"));
     }
 }

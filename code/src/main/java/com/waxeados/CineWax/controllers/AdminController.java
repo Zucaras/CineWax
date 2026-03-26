@@ -32,7 +32,7 @@ public class AdminController {
     private void validarAdmin(HttpSession session) {
         String rol = (String) session.getAttribute("rol");
         if (rol == null || !rol.equals("ADMINISTRADOR")) {
-            throw new SecurityException("Acceso denegado. Se requiere rol ADMINISTRADOR.");
+            throw new SecurityException("** ACCESO DENEGADO. SE REQUIETE ROL ADMINISTRADOR **");
         }
     }
 
@@ -42,7 +42,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<?>> altaPelicula(@RequestBody PeliculaDTO dto, HttpSession session) {
         validarAdmin(session);
         Pelicula p = peliculaService.altaPelicula(dto);
-        return ResponseEntity.ok(ApiResponse.ok("Película creada exitosamente", peliculaMapper.toPeliculaResumen(p)));
+        return ResponseEntity.ok(ApiResponse.ok("** PELICULA CREADA EXITOSAMENTE **", peliculaMapper.toPeliculaResumen(p)));
     }
 
     // ==================== 2. ALTA DE HORARIO ====================
@@ -51,7 +51,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<?>> altaHorario(@RequestBody HorarioDTO dto, HttpSession session) {
         validarAdmin(session);
         HorarioCartelera h = horarioService.altaHorario(dto);
-        return ResponseEntity.ok(ApiResponse.ok("Horario creado exitosamente", horarioMapper.toHorarioResponse(h)));
+        return ResponseEntity.ok(ApiResponse.ok("** HORARIO CREADO EXITOSAMENTE **", horarioMapper.toHorarioResponse(h)));
     }
 
     @PostMapping("/horarios/encolar")
@@ -59,7 +59,7 @@ public class AdminController {
         validarAdmin(session);
         horarioService.encolarSolicitudHorario(dto);
         int pendientes = horarioService.obtenerSolicitudesPendientes().size();
-        return ResponseEntity.ok(ApiResponse.ok("Solicitud encolada. Pendientes: " + pendientes));
+        return ResponseEntity.ok(ApiResponse.ok("** SOLICITUD ENCOLADA. PENDIENTES: " + pendientes + " **"));
     }
 
     @PostMapping("/horarios/procesar-cola")
@@ -75,7 +75,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> bajaPelicula(@PathVariable Integer id, HttpSession session) {
         validarAdmin(session);
         peliculaService.bajaPelicula(id);
-        return ResponseEntity.ok(ApiResponse.ok("Película eliminada exitosamente"));
+        return ResponseEntity.ok(ApiResponse.ok("** PELICULA ELIMINADA EXITOSAMENTE **"));
     }
 
     // ==================== 4. BAJA DE HORARIO ====================
@@ -84,7 +84,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> bajaHorario(@PathVariable Integer id, HttpSession session) {
         validarAdmin(session);
         horarioService.bajaHorario(id);
-        return ResponseEntity.ok(ApiResponse.ok("Horario eliminado exitosamente"));
+        return ResponseEntity.ok(ApiResponse.ok("** HORARIO ELIMINADO EXITOSAMENTE **"));
     }
 
     // ==================== 5. MODIFICAR PELÍCULA ====================
@@ -93,7 +93,7 @@ public class AdminController {
     public ResponseEntity<ApiResponse<?>> modificarPelicula(@PathVariable Integer id, @RequestBody PeliculaDTO dto, HttpSession session) {
         validarAdmin(session);
         Pelicula p = peliculaService.modificarPelicula(id, dto);
-        return ResponseEntity.ok(ApiResponse.ok("Película modificada exitosamente", peliculaMapper.toPeliculaResumen(p)));
+        return ResponseEntity.ok(ApiResponse.ok("** PELICULA MODIFICADA EXITOSAMENTE", peliculaMapper.toPeliculaResumen(p)));
     }
 
     // ==================== 6. CONSULTAR PELÍCULA ====================
@@ -103,7 +103,7 @@ public class AdminController {
         validarAdmin(session);
         Pelicula p = peliculaService.consultarPelicula(id);
         List<CarteleraDTO> horarios = horarioService.obtenerHorariosPelicula(id);
-        return ResponseEntity.ok(ApiResponse.ok("Consulta exitosa", peliculaMapper.toPeliculaDetalle(p, horarios)));
+        return ResponseEntity.ok(ApiResponse.ok("** CONSULTA EXITOSA **", peliculaMapper.toPeliculaDetalle(p, horarios)));
     }
 
     @GetMapping("/peliculas")

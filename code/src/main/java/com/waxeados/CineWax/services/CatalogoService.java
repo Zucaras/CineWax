@@ -45,12 +45,12 @@ public class CatalogoService {
     /** Obtener un estado por ID. */
     public Estado obtenerEstado(String idEstado) {
         return estadoRepository.findById(idEstado)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado: " + idEstado));
+                .orElseThrow(() -> new IllegalArgumentException("** ESTADO NO ENCONTRADO **"));
     }
 
     /** Obtener un municipio por ID. */
     public Municipio obtenerMunicipio(String idMunicipio) {
         return municipioRepository.findById(idMunicipio)
-                .orElseThrow(() -> new IllegalArgumentException("Municipio no encontrado: " + idMunicipio));
+                .orElseThrow(() -> new IllegalArgumentException("** MUNICIPIO NO ENCONTRADO **"));
     }
 }

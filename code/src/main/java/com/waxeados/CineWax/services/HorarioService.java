@@ -243,7 +243,7 @@ public class HorarioService {
                         + "' en sala " + h.getSala().getNumeroSala()
                         + " a las " + h.getHoraInicio());
             } catch (Exception e) {
-                resultados.add("ERROR: " + e.getMessage());
+                resultados.add("** ERROR: " + e.getMessage() + " **");
             }
         }
 

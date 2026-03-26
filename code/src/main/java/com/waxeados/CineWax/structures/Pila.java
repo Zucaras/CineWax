@@ -25,7 +25,7 @@ public class Pila<T> {
 
     /** Desapila y retorna el elemento del tope. O(1) */
     public T pop() {
-        if (estaVacia()) throw new IllegalStateException("La pila está vacía");
+        if (estaVacia()) throw new IllegalStateException("** LA PILA ESTA VACIA **");
         T tope = datos.obtener(0);
         datos.eliminar(e -> e.equals(tope));
         return tope;
@@ -33,7 +33,7 @@ public class Pila<T> {
 
     /** Consulta el elemento del tope sin desapilar. O(1) */
     public T peek() {
-        if (estaVacia()) throw new IllegalStateException("La pila está vacía");
+        if (estaVacia()) throw new IllegalStateException("** LA PILA ESTA VACIA **");
         return datos.obtener(0);
     }
 
