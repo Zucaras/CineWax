@@ -20,11 +20,11 @@ public class HorarioCartelera {
     @Column(name = "id_horario")
     private Integer idHorario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_pelicula", nullable = false)
     private Pelicula pelicula;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sala", nullable = false)
     private Sala sala;
 

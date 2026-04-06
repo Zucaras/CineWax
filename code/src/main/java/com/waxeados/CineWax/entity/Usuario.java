@@ -34,7 +34,7 @@ public class Usuario {
     private Rol rolUsuario;
 
     // Municipio al que pertenece (solo relevante para ADMINISTRADOR)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_municipio")
     private Municipio municipio;
 }
