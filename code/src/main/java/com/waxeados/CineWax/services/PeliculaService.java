@@ -1,6 +1,5 @@
 package com.waxeados.CineWax.services;
 
-import com.waxeados.CineWax.dto.CarteleraDTO;
 import com.waxeados.CineWax.dto.PeliculaDTO;
 import com.waxeados.CineWax.entity.*;
 import com.waxeados.CineWax.respositories.*;
@@ -32,7 +31,7 @@ public class PeliculaService {
      */
     @Transactional
     public Pelicula altaPelicula(PeliculaDTO dto) {
-        if (peliculaRepository.existsByNameIgnoreCase(dto.getNombre())) {
+        if (peliculaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
             throw new IllegalArgumentException("** YA EXISTE PELICULA CON EL NOMBRE DE: " + dto.getNombre() + " **");
         }
 
@@ -80,7 +79,7 @@ public class PeliculaService {
 
         // Verificar que el nuevo nombre no colisione con otra película
         if (!pelicula.getNombre().equalsIgnoreCase(dto.getNombre())
-                && peliculaRepository.existsByNameIgnoreCase(dto.getNombre())) {
+                && peliculaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
             throw new IllegalArgumentException("** YA EXISTE UNA PELICULA CON EL NOMBRE: " + dto.getNombre()+ " **");
         }
 

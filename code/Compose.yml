@@ -25,6 +25,8 @@ services:
 
   # ─────────────────────────────────────────
   #  pgAdmin — interfaz visual para PostgreSQL
+  #  SOLO PARA DESARROLLO, NO USAR EN PRODUCCIÓN
+  #        USO EXCLUSIVO PARA pgAdmin
   # ─────────────────────────────────────────
   pgadmin:
     image: dpage/pgadmin4:latest

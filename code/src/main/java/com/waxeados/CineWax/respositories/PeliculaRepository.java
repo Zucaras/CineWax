@@ -11,9 +11,9 @@ import java.util.List;
 public interface PeliculaRepository extends JpaRepository<Pelicula, Integer> {
     
     // Spring Data JPA will automatically implement this query based on the method name
-    boolean existsByNameIgnoreCase(String name);
+    boolean existsByNombreIgnoreCase(String nombre);
 
-    List<Pelicula> findByNameContainingIgnoreCase(String nombre);
+    List<Pelicula> findByNombreContainingIgnoreCase(String nombre);
  
     List<Pelicula> findByClasificacionIgnoreCase(String clasificacion);
  
