@@ -44,7 +44,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  MENÚ PRINCIPAL
+    //  MENÚ PRINCIPAL (PUNTO 4: CERRAR PROGRAMA COMPLETAMENTE)
     // ══════════════════════════════════════════════════════════
 
     private void menuPrincipal() {
@@ -54,7 +54,7 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("╠══════════════════════════════════╣");
             System.out.println("║  1. Iniciar sesion               ║");
             System.out.println("║  2. Registrarse                  ║");
-            System.out.println("║  3. Salir                        ║");
+            System.out.println("║  3. Salir del programa           ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
 
@@ -62,7 +62,10 @@ public class ConsoleRunner implements CommandLineRunner {
             switch (op) {
                 case 1 -> iniciarSesion();
                 case 2 -> registrarse();
-                case 3 -> { System.out.println("** CERRANDO SESION **"); return; }
+                case 3 -> {
+                    System.out.println("\n** CERRANDO APLICACION. HASTA LUEGO **");
+                    System.exit(0); // Esto apaga Spring Boot y finaliza la consola
+                }
                 default -> System.out.println("** OPCION INVALIDA **");
             }
         }
@@ -73,7 +76,7 @@ public class ConsoleRunner implements CommandLineRunner {
     // ══════════════════════════════════════════════════════════
 
     private void iniciarSesion() {
-        System.out.print("Usuarios: ");
+        System.out.print("Usuario: ");
         String username = scanner.nextLine().trim();
         System.out.print("Contraseña: ");
         String password = scanner.nextLine().trim();
@@ -131,7 +134,7 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  5. Modificar Pelicula           ║");
             System.out.println("║  6. Consultar Pelicula           ║");
             System.out.println("║  7. Consultar Cartelera          ║");
-            System.out.println("║  8. Salir                        ║");
+            System.out.println("║  8. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
 
@@ -144,7 +147,7 @@ public class ConsoleRunner implements CommandLineRunner {
                 case 5 -> modificarPelicula();
                 case 6 -> consultarPelicula();
                 case 7 -> consultarCartelera();
-                case 8 -> { usuarioActual = null; return; }
+                case 8 -> { usuarioActual = null; return; } // Retorna al menú principal
                 default -> System.out.println("*** OPCION INVALIDA ***");
             }
         }
@@ -165,7 +168,7 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  4. Ordenar Cartelera (A y D)    ║");
             System.out.println("║  5. Consultar Pelicula           ║");
             System.out.println("║  6. Consultar Cartelera          ║");
-            System.out.println("║  7. Salir                        ║");
+            System.out.println("║  7. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
 
@@ -177,7 +180,7 @@ public class ConsoleRunner implements CommandLineRunner {
                 case 4 -> ordenarCartelera();
                 case 5 -> consultarPelicula();
                 case 6 -> consultarCartelera();
-                case 7 -> { usuarioActual = null; return; }
+                case 7 -> { usuarioActual = null; return; } // Retorna al menú principal
                 default -> System.out.println("*** OPCION INVALIDA ***");
             }
         }
@@ -345,23 +348,43 @@ public class ConsoleRunner implements CommandLineRunner {
         }
     }
 
+    // PUNTO 1: AGREGAR OPCIÓN DE BÚSQUEDA POR RANGO DE FECHAS
     private void consultarCartelera() {
         String idEstado = seleccionarEstado();
         String idMunicipio = seleccionarMunicipio(idEstado);
         if (idMunicipio == null) return;
 
+        System.out.println("\nSeleccione el tipo de consulta:");
+        System.out.println("  1. Cartelera Completa (ordenada)");
+        System.out.println("  2. Buscar por Rango de Fechas");
+        System.out.print("Opcion: ");
+        int tipoBusqueda = leerEntero();
+
         int orden = leerOpcionOrden();
         boolean asc = (orden == 1);
 
         try {
-            List<CarteleraDTO> cartelera = horarioService.consultarCartelera(idMunicipio, asc);
+            List<CarteleraDTO> cartelera;
 
-            if (usuarioActual != null) {
-                historialService.registrarAccion(usuarioActual.getUsername(), "CONSULTAR_CARTELERA", idMunicipio);
+            if (tipoBusqueda == 2) {
+                System.out.print("Fecha de inicio (dd/MM/yyyy): ");
+                LocalDate inicio = leerFecha();
+                System.out.print("Fecha de fin (dd/MM/yyyy): ");
+                LocalDate fin = leerFecha();
+
+                cartelera = horarioService.consultarCarteleraRango(idMunicipio, inicio, fin, asc);
+                if (usuarioActual != null) {
+                    historialService.registrarAccion(usuarioActual.getUsername(), "CARTELERA_RANGO", idMunicipio + " " + inicio + " a " + fin);
+                }
+            } else {
+                cartelera = horarioService.consultarCartelera(idMunicipio, asc);
+                if (usuarioActual != null) {
+                    historialService.registrarAccion(usuarioActual.getUsername(), "CONSULTAR_CARTELERA", idMunicipio);
+                }
             }
 
             if (cartelera.isEmpty()) {
-                System.out.println("\n** NO HAY FUNCIONES REGISTRADAS PARA ESTE MUNICIPIO **");
+                System.out.println("\n** NO HAY FUNCIONES REGISTRADAS PARA ESTA BUSQUEDA **");
             } else {
                 System.out.println("\n||-CARTELERA-||");
                 imprimirCartelera(cartelera);
@@ -475,7 +498,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  HELPERS DE SELECCIÓN Y VALIDACIÓN (REQUERIMIENTOS 1, 2 y 3)
+    //  HELPERS DE SELECCIÓN Y VALIDACIÓN
     // ══════════════════════════════════════════════════════════
 
     private String seleccionarEstado() {
@@ -703,21 +726,29 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  HELPERS DE IMPRESIÓN GENERAL
+    //  HELPERS DE IMPRESIÓN GENERAL (PUNTO 2: INCLUYE ESTADO/MUNICIPIO)
     // ══════════════════════════════════════════════════════════
 
     private void imprimirCartelera(List<CarteleraDTO> cartelera) {
-        System.out.printf("  %-4s %-25s %-6s %-8s %-8s %-12s%n",
-                "#", "Nombre", "Sala", "Hora", "Fin", "Fecha");
-        System.out.println("  " + "─".repeat(70));
+        // Se agregaron espacios y ajustes para mostrar la columna 'Ubicación'
+        System.out.printf("  %-4s %-20s %-15s %-5s %-6s %-6s %-12s%n",
+                "#", "Nombre", "Ubicacion", "Sala", "Hora", "Fin", "Fecha");
+        System.out.println("  " + "─".repeat(80));
 
         int i = 1;
         for (CarteleraDTO c : cartelera) {
-            System.out.printf("  %-4d %-25s %-6d %-8s %-8s %-12s%n",
+
+            // Recortar strings si son muy largos para que no rompan la tabla
+            String nombre = c.getNombrePelicula();
+            if (nombre.length() > 20) nombre = nombre.substring(0, 17) + "...";
+
+            String ubicacion = c.getMunicipio() + " (" + c.getEstado() + ")";
+            if (ubicacion.length() > 15) ubicacion = ubicacion.substring(0, 12) + "...";
+
+            System.out.printf("  %-4d %-20s %-15s %-5d %-6s %-6s %-12s%n",
                     i++,
-                    c.getNombrePelicula().length() > 25
-                            ? c.getNombrePelicula().substring(0, 22) + "..."
-                            : c.getNombrePelicula(),
+                    nombre,
+                    ubicacion,
                     c.getNumeroSala(),
                     c.getHoraInicio(),
                     c.getHoraFinEstimada(),
