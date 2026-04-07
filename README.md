@@ -34,7 +34,7 @@ docker compose up -d postgres pgadmin
 * **```postgres```**: Levanta el motor de base de datos en el puerto ```5432```.
 * **```pgadmin```**: Levanta un cliente visual web en ```http://localhost:5050``` (Credenciales por defecto en el archivo ```Compose.yml```).
 
-*Nota: La aplicación cuenta con un archivo ```data.sql``` que poblará automáticamente los catálogos base (Estados, Municipios, Géneros y Salas) la primera vez que se levante la aplicación.*
+*Nota: La aplicación cuenta con un archivo ```data.sql``` que poblará automáticamente los catálogos base (Estados, Municipios, Géneros y Salas) la primera vez que se levante la aplicación. Este se encuentra en la dirección ```src/main/resources/static/data.sql```*
 
 ### Paso 3: Ejecutar la Aplicación
 Puedes arrancar la aplicación de dos maneras:

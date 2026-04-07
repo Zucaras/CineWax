@@ -174,18 +174,9 @@ INSERT INTO pelicula (id_pelicula, nombre, director, productor, clasificacion, d
 
 -- ══════════════════════════════════════════════════════════════
 --  6. USUARIOS
---     Passwords hasheados con BCrypt (password: "123456")
 -- ══════════════════════════════════════════════════════════════
--- NOTA: Si el hash no funciona, genera uno nuevo ejecutando:
---   System.out.println(new BCryptPasswordEncoder().encode("123456"));
-
-INSERT INTO usuario (id_usuario, username, password_hash, rol_usuario, id_municipio) VALUES
-    (1, 'admin_gdl',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', 'J11A'),
-    (2, 'admin_zpn',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', 'J11B'),
-    (3, 'admin_tlaq',  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', 'J11C'),
-    (4, 'admin_mty',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMINISTRADOR', 'N11A'),
-    (5, 'cliente1',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'CLIENTE',        NULL),
-    (6, 'cliente2',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'CLIENTE',        NULL);
+-- NOTA: Se tiene que crear un usuario nuevo en la interfaz
+--       Ya sea Admin o Cliente
 
 -- ══════════════════════════════════════════════════════════════
 --  7. HORARIOS DE CARTELERA
