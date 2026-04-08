@@ -84,7 +84,7 @@ public class ConsoleRunner implements CommandLineRunner {
         try {
             LoginDTO dto = new LoginDTO(username, password);
             usuarioActual = userService.login(dto);
-            System.out.println("\nBienvenido, " + usuarioActual.getUsername()
+            System.out.println("\nBIENVENIDO, " + usuarioActual.getUsername().toUpperCase()
                     + " [" + usuarioActual.getRolUsuario() + "]");
 
             if (usuarioActual.getRolUsuario() == Usuario.Rol.ADMINISTRADOR) {
@@ -98,13 +98,21 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void registrarse() {
+        System.out.println("\n(Escriba 'CANCELAR' en cualquier momento para abortar)");
         String username = leerStringNoVacio("Usuario: ");
+        if (esCancelacionString(username)) return;
+
         String password = leerStringNoVacio("Contraseña: ");
+        if (esCancelacionString(password)) return;
+
         String rol = leerRol();
+        if (esCancelacionString(rol)) return;
 
         String idMunicipio = null;
         if (rol.equals("ADMINISTRADOR")) {
             String idEstado = seleccionarEstado();
+            if (idEstado == null) return;
+
             idMunicipio = seleccionarMunicipio(idEstado);
             if (idMunicipio == null) return;
         }
@@ -112,7 +120,7 @@ public class ConsoleRunner implements CommandLineRunner {
         try {
             RegistroDTO dto = new RegistroDTO(username, password, rol, idMunicipio);
             Usuario u = userService.registrar(dto);
-            System.out.println("\nUsuario registrado: " + u.getUsername() + " [" + u.getRolUsuario() + "]");
+            System.out.println("\nUSUARIO REGISTRADO: " + u.getUsername() + " [" + u.getRolUsuario() + "]");
         } catch (Exception e) {
             System.out.println("\n** ERROR: " + e.getMessage().toUpperCase() + " **");
         }
@@ -191,16 +199,26 @@ public class ConsoleRunner implements CommandLineRunner {
     // ══════════════════════════════════════════════════════════
 
     private void altaPelicula() {
-        System.out.println("\n-|Introduzca los datos|-");
+        System.out.println("\n-|Introduzca los datos (Escriba 'CANCELAR' o '0' para abortar)|-");
+
         String nombre = leerStringNoVacio("Nombre: ");
+        if (esCancelacionString(nombre)) return;
+
         String director = leerStringNoVacio("Director: ");
+        if (esCancelacionString(director)) return;
+
         String productor = leerStringNoVacio("Productor: ");
+        if (esCancelacionString(productor)) return;
+
         String clasificacion = leerClasificacion();
+        if (esCancelacionString(clasificacion)) return;
 
         System.out.print("Duracion (minutos): ");
-        int duracion = leerEnteroPositivo();
+        int duracion = leerEnteroPositivoOCero();
+        if (duracion == 0) return;
 
         int idGenero = seleccionarGenero();
+        if (idGenero == 0) return;
 
         try {
             PeliculaDTO dto = PeliculaDTO.builder()
@@ -208,22 +226,26 @@ public class ConsoleRunner implements CommandLineRunner {
                     .clasificacion(clasificacion).duracionMin(duracion).idGenero(idGenero)
                     .build();
             Pelicula p = peliculaService.altaPelicula(dto);
-            System.out.println("\nPelicula creada: " + p.getNombre() + " (ID: " + p.getIdPelicula() + ")");
+            System.out.println("\nPELICULA CREADA: " + p.getNombre().toUpperCase() + " (ID: " + p.getIdPelicula() + ")");
         } catch (Exception e) {
             System.out.println("\n** ERROR: " + e.getMessage().toUpperCase() + " **");
         }
     }
 
     private void altaHorario() {
+        System.out.println("\n(Escriba '0' en los IDs para cancelar)");
+
         int idPelicula = seleccionarPelicula();
-        if (idPelicula == -1) return;
+        if (idPelicula == 0 || idPelicula == -1) return;
 
         String idEstado = seleccionarEstado();
+        if (idEstado == null || esCancelacionString(idEstado)) return;
+
         String idMunicipio = seleccionarMunicipio(idEstado);
-        if (idMunicipio == null) return;
+        if (idMunicipio == null || esCancelacionString(idMunicipio)) return;
 
         int idSala = seleccionarSala(idMunicipio);
-        if (idSala == -1) return;
+        if (idSala == 0 || idSala == -1) return;
 
         System.out.print("Fecha (dd/MM/yyyy): ");
         LocalDate fecha = leerFecha();
@@ -237,7 +259,7 @@ public class ConsoleRunner implements CommandLineRunner {
                     .build();
             HorarioCartelera h = horarioService.altaHorario(dto);
             HorarioResponseDTO resp = horarioMapper.toHorarioResponse(h);
-            System.out.println("\nHorario creado:");
+            System.out.println("\nHORARIO CREADO:");
             System.out.printf("  Pelicula: %s | Sala: %d | Fecha: %s | %s - %s%n",
                     resp.getPelicula(), resp.getSala(), resp.getFecha(),
                     resp.getHoraInicio(), resp.getHoraFinEstimada());
@@ -247,8 +269,9 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void bajaPelicula() {
+        System.out.println("\n(Escriba '0' para cancelar)");
         int id = seleccionarPelicula();
-        if (id == -1) return;
+        if (id == 0 || id == -1) return;
 
         try {
             peliculaService.bajaPelicula(id);
@@ -259,10 +282,12 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void bajaHorario() {
-        System.out.println("\n--- BUSCAR HORARIO A ELIMINAR ---");
+        System.out.println("\n--- BUSCAR HORARIO A ELIMINAR (Escriba '0' o 'CANCELAR' para abortar) ---");
         String idEstado = seleccionarEstado();
+        if (idEstado == null || esCancelacionString(idEstado)) return;
+
         String idMunicipio = seleccionarMunicipio(idEstado);
-        if (idMunicipio == null) return;
+        if (idMunicipio == null || esCancelacionString(idMunicipio)) return;
 
         try {
             List<CarteleraDTO> cartelera = horarioService.consultarCartelera(idMunicipio, true);
@@ -290,8 +315,9 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void modificarPelicula() {
+        System.out.println("\n(Escriba '0' para cancelar)");
         int id = seleccionarPelicula();
-        if (id == -1) return;
+        if (id == 0 || id == -1) return;
 
         try {
             Pelicula actual = peliculaService.consultarPelicula(id);
@@ -303,29 +329,35 @@ public class ConsoleRunner implements CommandLineRunner {
 
             System.out.print("Nombre [" + actual.getNombre() + "]: ");
             String nombre = scanner.nextLine().trim();
+            if (esCancelacionString(nombre)) return;
             if (nombre.isEmpty()) nombre = actual.getNombre();
 
             System.out.print("Director [" + actual.getDirector() + "]: ");
             String director = scanner.nextLine().trim();
+            if (esCancelacionString(director)) return;
             if (director.isEmpty()) director = actual.getDirector();
 
             System.out.print("Productor [" + actual.getProductor() + "]: ");
             String productor = scanner.nextLine().trim();
+            if (esCancelacionString(productor)) return;
             if (productor.isEmpty()) productor = actual.getProductor();
 
             String clasif = leerClasificacionOpcional(actual.getClasificacion());
+            if (esCancelacionString(clasif)) return;
 
             System.out.print("Duracion min [" + actual.getDuracionMin() + "]: ");
             int duracion = leerEnteroPositivoOpcional(actual.getDuracionMin());
+            if (duracion == 0) return;
 
             int idGenero = seleccionarGeneroOpcional(actual.getGenero().getIdGenero());
+            if (idGenero == 0) return;
 
             PeliculaDTO dto = PeliculaDTO.builder()
                     .nombre(nombre).director(director).productor(productor)
                     .clasificacion(clasif).duracionMin(duracion).idGenero(idGenero)
                     .build();
             Pelicula p = peliculaService.modificarPelicula(id, dto);
-            System.out.println("\nPelicula modificada: " + p.getNombre());
+            System.out.println("\nPELICULA MODIFICADA: " + p.getNombre().toUpperCase());
         } catch (Exception e) {
             System.out.println("\n** ERROR: " + e.getMessage().toUpperCase() + " **");
         }
@@ -336,8 +368,9 @@ public class ConsoleRunner implements CommandLineRunner {
     // ══════════════════════════════════════════════════════════
 
     private void consultarPelicula() {
+        System.out.println("\n(Escriba '0' para cancelar)");
         int id = seleccionarPelicula();
-        if (id == -1) return;
+        if (id == 0 || id == -1) return;
 
         try {
             Pelicula p = peliculaService.consultarPelicula(id);
@@ -348,7 +381,7 @@ public class ConsoleRunner implements CommandLineRunner {
             }
 
             System.out.println("\n══════════════════════════════════");
-            System.out.println("  " + p.getNombre());
+            System.out.println("  " + p.getNombre().toUpperCase());
             System.out.println("══════════════════════════════════");
             System.out.println("  Director:       " + p.getDirector());
             System.out.println("  Productor:      " + p.getProductor());
@@ -368,17 +401,22 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void consultarCartelera() {
+        System.out.println("\n(Escriba '0' o 'CANCELAR' para abortar)");
         String idEstado = seleccionarEstado();
+        if (idEstado == null || esCancelacionString(idEstado)) return;
+
         String idMunicipio = seleccionarMunicipio(idEstado);
-        if (idMunicipio == null) return;
+        if (idMunicipio == null || esCancelacionString(idMunicipio)) return;
 
         System.out.println("\nSeleccione el tipo de consulta:");
         System.out.println("  1. Cartelera Completa (ordenada)");
         System.out.println("  2. Buscar por Rango de Fechas");
-        System.out.print("Opcion: ");
+        System.out.print("Opcion (0 para cancelar): ");
         int tipoBusqueda = leerEntero();
+        if (tipoBusqueda == 0) return;
 
         int orden = leerOpcionOrden();
+        if (orden == 0) return;
         boolean asc = (orden == 1);
 
         try {
@@ -387,8 +425,18 @@ public class ConsoleRunner implements CommandLineRunner {
             if (tipoBusqueda == 2) {
                 System.out.print("Fecha de inicio (dd/MM/yyyy): ");
                 LocalDate inicio = leerFecha();
-                System.out.print("Fecha de fin (dd/MM/yyyy): ");
-                LocalDate fin = leerFecha();
+
+                // VALIDACIÓN LÓGICA DE FECHAS
+                LocalDate fin = null;
+                while (true) {
+                    System.out.print("Fecha de fin (dd/MM/yyyy): ");
+                    fin = leerFecha();
+                    if (fin.isBefore(inicio)) {
+                        System.out.println("** ERROR LOGICO: LA FECHA DE FIN NO PUEDE SER ANTERIOR A LA DE INICIO. **");
+                    } else {
+                        break;
+                    }
+                }
 
                 cartelera = horarioService.consultarCarteleraRango(idMunicipio, inicio, fin, asc);
                 if (usuarioActual != null) {
@@ -417,7 +465,8 @@ public class ConsoleRunner implements CommandLineRunner {
     // ══════════════════════════════════════════════════════════
 
     private void buscarPorNombre() {
-        String q = leerStringNoVacio("Nombre de pelicula a buscar: ");
+        String q = leerStringNoVacio("Nombre de pelicula a buscar (0 para cancelar): ");
+        if (esCancelacionString(q)) return;
 
         try {
             historialService.registrarAccion(usuarioActual.getUsername(), "BUSCAR_NOMBRE", q);
@@ -430,7 +479,7 @@ public class ConsoleRunner implements CommandLineRunner {
 
             for (Pelicula p : peliculas) {
                 List<CarteleraDTO> horarios = horarioService.obtenerHorariosPelicula(p.getIdPelicula());
-                System.out.println("\n► " + p.getNombre() + " [" + p.getClasificacion() + "] - "
+                System.out.println("\n► " + p.getNombre().toUpperCase() + " [" + p.getClasificacion() + "] - "
                         + p.getGenero().getNombreGenero());
                 if (!horarios.isEmpty()) {
                     imprimirCartelera(horarios);
@@ -444,7 +493,9 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void buscarPorClasificacion() {
+        System.out.println("\n(Escriba '0' o 'CANCELAR' para abortar)");
         String c = leerClasificacion();
+        if (esCancelacionString(c)) return;
 
         try {
             historialService.registrarAccion(usuarioActual.getUsername(), "BUSCAR_CLASIFICACION", c);
@@ -457,7 +508,7 @@ public class ConsoleRunner implements CommandLineRunner {
 
             for (Pelicula p : peliculas) {
                 List<CarteleraDTO> horarios = horarioService.obtenerHorariosPelicula(p.getIdPelicula());
-                System.out.println("\n- " + p.getNombre() + " [" + p.getClasificacion() + "]");
+                System.out.println("\n- " + p.getNombre().toUpperCase() + " [" + p.getClasificacion() + "]");
                 if (!horarios.isEmpty()) imprimirCartelera(horarios);
                 else System.out.println("  ** SIN HORARIOS **");
             }
@@ -467,7 +518,9 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void buscarPorGenero() {
+        System.out.println("\n(Escriba '0' para cancelar)");
         int id = seleccionarGenero();
+        if (id == 0) return;
 
         try {
             historialService.registrarAccion(usuarioActual.getUsername(), "BUSCAR_GENERO", "ID:" + id);
@@ -480,7 +533,7 @@ public class ConsoleRunner implements CommandLineRunner {
 
             for (Pelicula p : peliculas) {
                 List<CarteleraDTO> horarios = horarioService.obtenerHorariosPelicula(p.getIdPelicula());
-                System.out.println("\n► " + p.getNombre() + " - " + p.getGenero().getNombreGenero());
+                System.out.println("\n► " + p.getNombre().toUpperCase() + " - " + p.getGenero().getNombreGenero());
                 if (!horarios.isEmpty()) imprimirCartelera(horarios);
                 else System.out.println("  ** SIN HORARIOS **");
             }
@@ -490,11 +543,15 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     private void ordenarCartelera() {
+        System.out.println("\n(Escriba '0' o 'CANCELAR' para abortar)");
         String idEstado = seleccionarEstado();
+        if (idEstado == null || esCancelacionString(idEstado)) return;
+
         String idMunicipio = seleccionarMunicipio(idEstado);
-        if (idMunicipio == null) return;
+        if (idMunicipio == null || esCancelacionString(idMunicipio)) return;
 
         int orden = leerOpcionOrden();
+        if (orden == 0) return;
         boolean asc = (orden == 1);
 
         try {
@@ -516,6 +573,14 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
+    //  HELPERS DE CANCELACIÓN GLOBAL
+    // ══════════════════════════════════════════════════════════
+
+    private boolean esCancelacionString(String input) {
+        return input.equalsIgnoreCase("CANCELAR") || input.equals("0");
+    }
+
+    // ══════════════════════════════════════════════════════════
     //  HELPERS DE SELECCIÓN Y VALIDACIÓN
     // ══════════════════════════════════════════════════════════
 
@@ -528,6 +593,9 @@ public class ConsoleRunner implements CommandLineRunner {
             }
             System.out.print("Ingrese ID Estado: ");
             String id = scanner.nextLine().trim().toUpperCase();
+
+            if (esCancelacionString(id)) return null;
+
             if (estados.stream().anyMatch(e -> e.getIdEstado().equals(id))) {
                 return id;
             }
@@ -548,6 +616,9 @@ public class ConsoleRunner implements CommandLineRunner {
             }
             System.out.print("Ingrese ID Municipio: ");
             String id = scanner.nextLine().trim().toUpperCase();
+
+            if (esCancelacionString(id)) return null;
+
             if (municipios.stream().anyMatch(m -> m.getIdMunicipio().equals(id))) {
                 return id;
             }
@@ -568,6 +639,9 @@ public class ConsoleRunner implements CommandLineRunner {
             }
             System.out.print("Ingrese ID Sala: ");
             int id = leerEntero();
+
+            if (id == 0) return 0;
+
             if (salas.stream().anyMatch(s -> s.getIdSala().equals(id))) {
                 return id;
             }
@@ -590,6 +664,9 @@ public class ConsoleRunner implements CommandLineRunner {
             }
             System.out.print("Ingrese ID Pelicula: ");
             int id = leerEntero();
+
+            if (id == 0) return 0;
+
             if (peliculas.stream().anyMatch(p -> p.getIdPelicula().equals(id))) {
                 return id;
             }
@@ -606,6 +683,9 @@ public class ConsoleRunner implements CommandLineRunner {
             }
             System.out.print("Ingrese ID Genero: ");
             int id = leerEntero();
+
+            if (id == 0) return 0;
+
             if (generos.stream().anyMatch(g -> g.getIdGenero().equals(id))) {
                 return id;
             }
@@ -622,6 +702,8 @@ public class ConsoleRunner implements CommandLineRunner {
             }
             System.out.print("Ingrese ID Genero [" + idActual + "]: ");
             String str = scanner.nextLine().trim();
+
+            if (esCancelacionString(str)) return 0;
             if (str.isEmpty()) return idActual;
 
             try {
@@ -641,7 +723,10 @@ public class ConsoleRunner implements CommandLineRunner {
         while (true) {
             System.out.print("Clasificacion (AA, A, B, B15, C, D): ");
             String c = scanner.nextLine().trim().toUpperCase();
+
+            if (esCancelacionString(c)) return c;
             if (validas.contains(c)) return c;
+
             System.out.println("** ERROR: CLASIFICACION NO VALIDA. USE UNA DE LAS OPCIONES. **");
         }
     }
@@ -651,8 +736,11 @@ public class ConsoleRunner implements CommandLineRunner {
         while (true) {
             System.out.print("Clasificacion [" + actual + "]: ");
             String c = scanner.nextLine().trim().toUpperCase();
+
+            if (esCancelacionString(c)) return c;
             if (c.isEmpty()) return actual;
             if (validas.contains(c)) return c;
+
             System.out.println("** ERROR: CLASIFICACION NO VALIDA. USE UNA DE LAS OPCIONES. **");
         }
     }
@@ -661,7 +749,10 @@ public class ConsoleRunner implements CommandLineRunner {
         while (true) {
             System.out.print("Rol (ADMINISTRADOR / CLIENTE): ");
             String rol = scanner.nextLine().trim().toUpperCase();
+
+            if (esCancelacionString(rol)) return rol;
             if (rol.equals("ADMINISTRADOR") || rol.equals("CLIENTE")) return rol;
+
             System.out.println("** ERROR: ROL NO VALIDO. ESCRIBA ADMINISTRADOR O CLIENTE. **");
         }
     }
@@ -670,16 +761,22 @@ public class ConsoleRunner implements CommandLineRunner {
         while (true) {
             System.out.print(mensaje);
             String val = scanner.nextLine().trim();
+
+            if (esCancelacionString(val)) return val;
             if (!val.isEmpty()) return val;
+
             System.out.println("** ERROR: ESTE CAMPO NO PUEDE QUEDAR VACIO. **");
         }
     }
 
     private int leerOpcionOrden() {
         while (true) {
-            System.out.print("Orden (1=Ascendente, 2=Descendente): ");
+            System.out.print("Orden (1=Ascendente, 2=Descendente, 0=Cancelar): ");
             int op = leerEntero();
+
+            if (op == 0) return 0;
             if (op == 1 || op == 2) return op;
+
             System.out.println("** ERROR: OPCION INVALIDA. ELIJA 1 O 2. **");
         }
     }
@@ -699,10 +796,10 @@ public class ConsoleRunner implements CommandLineRunner {
         }
     }
 
-    private int leerEnteroPositivo() {
+    private int leerEnteroPositivoOCero() {
         while (true) {
             int num = leerEntero();
-            if (num > 0) return num;
+            if (num >= 0) return num;
             System.out.print("** ERROR: EL NUMERO DEBE SER MAYOR A CERO. INTENTE DE NUEVO: ");
         }
     }
@@ -710,6 +807,7 @@ public class ConsoleRunner implements CommandLineRunner {
     private int leerEnteroPositivoOpcional(int actual) {
         while (true) {
             String str = scanner.nextLine().trim();
+            if (esCancelacionString(str)) return 0;
             if (str.isEmpty()) return actual;
             try {
                 int num = Integer.parseInt(str);
@@ -748,7 +846,6 @@ public class ConsoleRunner implements CommandLineRunner {
     // ══════════════════════════════════════════════════════════
 
     private void imprimirCartelera(List<CarteleraDTO> cartelera) {
-        // Cambiamos el símbolo '#' por 'ID' para que sea obvio qué número usar en "baja de horario"
         System.out.printf("  %-5s %-20s %-15s %-5s %-6s %-6s %-12s%n",
                 "ID", "Nombre", "Ubicacion", "Sala", "Hora", "Fin", "Fecha");
         System.out.println("  " + "─".repeat(80));
@@ -761,7 +858,6 @@ public class ConsoleRunner implements CommandLineRunner {
             String ubicacion = c.getMunicipio() + " (" + c.getEstado() + ")";
             if (ubicacion.length() > 15) ubicacion = ubicacion.substring(0, 12) + "...";
 
-            // Imprimimos el c.getIdHorario() real en lugar de una variable incremental i++
             System.out.printf("  %-5d %-20s %-15s %-5d %-6s %-6s %-12s%n",
                     c.getIdHorario(),
                     nombre,

@@ -23,7 +23,6 @@ public class ApiResponse<T> {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
-
     // ==================== FACTORY METHODS ====================
 
     /** Respuesta exitosa con datos. */
