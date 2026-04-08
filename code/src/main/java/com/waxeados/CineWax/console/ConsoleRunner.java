@@ -7,6 +7,7 @@ import com.waxeados.CineWax.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.util.Scanner;
  */
 @Component
 @Profile("console")
+@Order(2)
 @RequiredArgsConstructor
 public class ConsoleRunner implements CommandLineRunner {
 
