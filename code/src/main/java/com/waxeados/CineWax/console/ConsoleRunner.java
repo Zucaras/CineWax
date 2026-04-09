@@ -32,6 +32,7 @@ public class ConsoleRunner implements CommandLineRunner {
     private final HorarioService horarioService;
     private final CatalogoService catalogoService;
     private final HistorialService historialService;
+    private final FloydService floydService;
     private final HorarioMapper horarioMapper;
 
     private final Scanner scanner = new Scanner(System.in);
@@ -144,7 +145,8 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  5. Modificar Pelicula           ║");
             System.out.println("║  6. Consultar Pelicula           ║");
             System.out.println("║  7. Consultar Cartelera          ║");
-            System.out.println("║  8. Cerrar Sesion                ║");
+            System.out.println("║  8. Procesar Cola de Horarios    ║"); // <-- APLICACIÓN DE ESTRUCTURA: COLA
+            System.out.println("║  9. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
 
@@ -157,7 +159,8 @@ public class ConsoleRunner implements CommandLineRunner {
                 case 5 -> modificarPelicula();
                 case 6 -> consultarPelicula();
                 case 7 -> consultarCartelera();
-                case 8 -> { usuarioActual = null; return; }
+                case 8 -> procesarColaHorarios();
+                case 9 -> { usuarioActual = null; return; }
                 default -> System.out.println("** OPCION INVALIDA **");
             }
         }
@@ -175,10 +178,12 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  1. Buscar pelicula por nombre   ║");
             System.out.println("║  2. Buscar por clasificacion     ║");
             System.out.println("║  3. Buscar por genero            ║");
-            System.out.println("║  4. Ordenar Cartelera (A y D)    ║");
+            System.out.println("║  4. Ordenar Cartelera (QuickSort)║"); // <-- APLICACIÓN DE ESTRUCTURA: QUICKSORT
             System.out.println("║  5. Consultar Pelicula           ║");
             System.out.println("║  6. Consultar Cartelera          ║");
-            System.out.println("║  7. Cerrar Sesion                ║");
+            System.out.println("║  7. Ver mi Historial (Pila)      ║"); // <-- APLICACIÓN DE ESTRUCTURA: PILA
+            System.out.println("║  8. Ruta entre Sucursales (Grafo)║"); // <-- APLICACIÓN DE ESTRUCTURA: GRAFO
+            System.out.println("║  9. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
 
@@ -190,14 +195,105 @@ public class ConsoleRunner implements CommandLineRunner {
                 case 4 -> ordenarCartelera();
                 case 5 -> consultarPelicula();
                 case 6 -> consultarCartelera();
-                case 7 -> { usuarioActual = null; return; }
+                case 7 -> verHistorial();
+                case 8 -> calcularRutaCorta();
+                case 9 -> { usuarioActual = null; return; }
                 default -> System.out.println("** OPCION INVALIDA **");
             }
         }
     }
 
     // ══════════════════════════════════════════════════════════
-    //  FUNCIONES ADMIN
+    //  NUEVAS FUNCIONES DE ESTRUCTURAS DE DATOS EXPLÍCITAS
+    // ══════════════════════════════════════════════════════════
+
+    // --- COLA (QUEUE) ---
+    private void procesarColaHorarios() {
+        System.out.println("\n--- PROCESANDO COLA DE HORARIOS PENDIENTES ---");
+        try {
+            int procesados = horarioService.procesarColaPendientes();
+
+            if (procesados == 0) {
+                System.out.println("** LA COLA ESTÁ VACÍA. NO HAY HORARIOS POR PROCESAR **");
+            } else {
+                System.out.println("** SE PROCESARON EXITOSAMENTE " + procesados + " HORARIOS DE LA COLA (FIFO) **");
+            }
+        } catch (Exception e) {
+            System.out.println("\n** ERROR: " + e.getMessage().toUpperCase() + " **");
+        }
+    }
+
+    // --- PILA (STACK) ---
+    private void verHistorial() {
+        System.out.println("\n--- MI HISTORIAL DE BÚSQUEDAS (PILA / LIFO) ---");
+        try {
+            List<String> acciones = historialService.obtenerHistorial(usuarioActual.getUsername());
+
+            if (acciones.isEmpty()) {
+                System.out.println("** TU HISTORIAL ESTA VACIO **");
+            } else {
+                int i = 1;
+                for (String accion : acciones) {
+                    System.out.println("  " + i++ + ". " + accion);
+                }
+
+                System.out.print("\n¿Desea deshacer su ultima busqueda? (1=Si, 0=No): ");
+                int pop = leerEntero();
+
+                if (pop == 1) {
+                    historialService.deshacerUltimaAccion(usuarioActual.getUsername());
+                    System.out.println("** ULTIMA ACCION ELIMINADA DEL HISTORIAL (POP) **");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("\n** ERROR: " + e.getMessage().toUpperCase() + " **");
+        }
+    }
+
+    // --- GRAFOS (FLOYD-WARSHALL) ---
+    private void calcularRutaCorta() {
+        System.out.println("\n--- CALCULAR RUTA ÓPTIMA ENTRE SUCURSALES (GRAFOS) ---");
+        System.out.println("Nota: El cálculo se realiza entre sucursales del mismo estado.");
+
+        System.out.println("\n[ SELECCIONE EL ESTADO ] (Escriba '0' para abortar)");
+        String idEstado = seleccionarEstado();
+        if (idEstado == null) return;
+
+        System.out.println("\n[ SELECCIONE MUNICIPIO DE ORIGEN ] (Escriba '0' para abortar)");
+        String idOrigen = seleccionarMunicipio(idEstado);
+        if (idOrigen == null) return;
+
+        System.out.println("\n[ SELECCIONE MUNICIPIO DE DESTINO ] (Escriba '0' para abortar)");
+        String idDestino = seleccionarMunicipio(idEstado);
+        if (idDestino == null) return;
+
+        if (idOrigen.equalsIgnoreCase(idDestino)) {
+            System.out.println("\n** EL ORIGEN Y DESTINO SON EL MISMO MUNICIPIO (" + idOrigen.toUpperCase() + ") **");
+            return;
+        }
+
+        try {
+            // Llamamos a los métodos reales de tu FloydService usando el ID del Estado
+            int distancia = floydService.getDistancia(idEstado, idOrigen, idDestino);
+            List<String> camino = floydService.getCamino(idEstado, idOrigen, idDestino);
+
+            // Calculamos un tiempo estimado (ej. 1.5 minutos por km recorrido)
+            int tiempoEstimado = (int) (distancia * 1.5);
+
+            System.out.println("\n||- RUTA MÁS CORTA CALCULADA -||");
+            // Unimos la lista de nodos devueltos por tu algoritmo con una flechita visual
+            System.out.println("  Ruta óptima:     " + String.join(" -> ", camino).toUpperCase());
+            System.out.println("  Distancia total: " + distancia + " km");
+            System.out.println("  Tiempo estimado: " + tiempoEstimado + " minutos");
+
+        } catch (Exception e) {
+            System.out.println("\n** ERROR: " + e.getMessage().toUpperCase() + " **");
+        }
+    }
+
+
+    // ══════════════════════════════════════════════════════════
+    //  FUNCIONES ADMIN (ORIGINALES)
     // ══════════════════════════════════════════════════════════
 
     private void altaPelicula() {
@@ -260,8 +356,9 @@ public class ConsoleRunner implements CommandLineRunner {
                     .fechaProyeccion(fecha).horaInicio(hora)
                     .build();
             HorarioCartelera h = horarioService.altaHorario(dto);
+
             HorarioResponseDTO resp = horarioMapper.toHorarioResponse(h);
-            System.out.println("\nHORARIO CREADO:");
+            System.out.println("\nHORARIO REGISTRADO:");
             System.out.printf("  Pelicula: %s | Sala: %d | Fecha: %s | %s - %s%n",
                     resp.getPelicula(), resp.getSala(), resp.getFecha(),
                     resp.getHoraInicio(), resp.getHoraFinEstimada());
@@ -463,7 +560,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  FUNCIONES CLIENTE
+    //  FUNCIONES CLIENTE (BÚSQUEDAS ORIGINALES)
     // ══════════════════════════════════════════════════════════
 
     private void buscarPorNombre() {

@@ -8,10 +8,13 @@ import com.waxeados.CineWax.mappers.HorarioMapper;
 import com.waxeados.CineWax.respositories.*;
 import com.waxeados.CineWax.structures.Cola;
 import com.waxeados.CineWax.structures.QuickSort;
+import com.waxeados.CineWax.dto.HorarioDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Queue;
+import java.util.LinkedList;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ public class HorarioService {
 
     // Cola para procesar solicitudes de horarios en orden
     private final Cola<HorarioDTO> colaSolicitudes = new Cola<>();
+    private final Queue<HorarioDTO> colaPendientes = new LinkedList<>();
 
     // ==================== ALTA HORARIO ====================
 
@@ -219,6 +223,22 @@ public class HorarioService {
     }
 
     // ==================== COLA ====================
+
+    public void encolarHorario(HorarioDTO dto) {
+        colaPendientes.offer(dto); // Agrega a la fila
+    }
+
+    public int procesarColaPendientes() {
+        int procesados = 0;
+        while (!colaPendientes.isEmpty()) {
+            HorarioDTO dto = colaPendientes.poll(); // Saca el primero en la fila
+
+            // Aquí llamas a tu método normal de alta que ya tenías para que lo guarde en BD
+            this.altaHorario(dto);
+            procesados++;
+        }
+        return procesados;
+    }
 
     /**
      * Obtener solicitudes pendientes en la cola.

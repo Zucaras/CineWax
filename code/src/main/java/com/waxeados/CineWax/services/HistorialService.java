@@ -1,13 +1,13 @@
 package com.waxeados.CineWax.services;
 
-import com.waxeados.CineWax.dto.HistorialNavegacionDTO;
-import com.waxeados.CineWax.structures.Pila;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Stack;
+import java.util.Collections;
 
 /**
  * Servicio de historial de navegación del cliente.
@@ -19,63 +19,27 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class HistorialService {
 
-    // Mapa de username -> Pila de historial
-    private final Map<String, Pila<HistorialNavegacionDTO>> historialesPorUsuario =
-            new ConcurrentHashMap<>();
+    // ESTRUCTURA DE DATOS: PILA (Stack).
+    // Usamos un mapa para darle una pila independiente a cada usuario.
+    private final Map<String, Stack<String>> historiales = new HashMap<>();
 
-    /**
-     * Registra una acción en el historial del usuario.
-     */
     public void registrarAccion(String username, String accion, String detalle) {
-        Pila<HistorialNavegacionDTO> pila = historialesPorUsuario
-                .computeIfAbsent(username, k -> new Pila<>());
-
-        HistorialNavegacionDTO entrada = HistorialNavegacionDTO.builder()
-                .accion(accion)
-                .detalle(detalle)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        pila.push(entrada);
+        historiales.putIfAbsent(username, new Stack<>());
+        historiales.get(username).push(accion + " - " + detalle); // Push (LIFO)
     }
 
-    /**
-     * Obtiene la última acción del usuario (peek).
-     */
-    public HistorialNavegacionDTO obtenerUltimaAccion(String username) {
-        Pila<HistorialNavegacionDTO> pila = historialesPorUsuario.get(username);
-        if (pila == null || pila.estaVacia()) {
-            return null;
+    public List<String> obtenerHistorial(String username) {
+        if (!historiales.containsKey(username)) return new ArrayList<>();
+
+        // Convertimos la pila en lista para imprimirla (y la volteamos para ver lo más nuevo primero)
+        List<String> lista = new ArrayList<>(historiales.get(username));
+        Collections.reverse(lista);
+        return lista;
+    }
+
+    public void deshacerUltimaAccion(String username) {
+        if (historiales.containsKey(username) && !historiales.get(username).isEmpty()) {
+            historiales.get(username).pop(); // Elimina la última acción (POP)
         }
-        return pila.peek();
-    }
-
-    /**
-     * Regresa a la acción anterior (pop).
-     */
-    public HistorialNavegacionDTO regresar(String username) {
-        Pila<HistorialNavegacionDTO> pila = historialesPorUsuario.get(username);
-        if (pila == null || pila.estaVacia()) {
-            return null;
-        }
-        return pila.pop();
-    }
-
-    /**
-     * Obtiene todo el historial del usuario (del más reciente al más antiguo).
-     */
-    public List<HistorialNavegacionDTO> obtenerHistorial(String username) {
-        Pila<HistorialNavegacionDTO> pila = historialesPorUsuario.get(username);
-        if (pila == null) {
-            return List.of();
-        }
-        return pila.toList();
-    }
-
-    /**
-     * Limpia el historial de un usuario.
-     */
-    public void limpiarHistorial(String username) {
-        historialesPorUsuario.remove(username);
     }
 }

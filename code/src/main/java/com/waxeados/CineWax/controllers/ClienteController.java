@@ -188,18 +188,27 @@ public class ClienteController {
     @GetMapping("/historial")
     public ResponseEntity<ApiResponse<?>> obtenerHistorial(HttpSession session) {
         String username = validarCliente(session);
-        List<HistorialNavegacionDTO> data = historialService.obtenerHistorial(username);
+
+        // Cambiamos el DTO por String para que coincida con el Servicio
+        List<String> data = historialService.obtenerHistorial(username);
+
         return ResponseEntity.ok(ApiResponse.ok("Historial de navegacion (Pila)", data));
     }
 
     @PostMapping("/historial/regresar")
     public ResponseEntity<ApiResponse<?>> regresar(HttpSession session) {
         String username = validarCliente(session);
-        HistorialNavegacionDTO anterior = historialService.regresar(username);
 
-        if (anterior == null) {
+        // Primero verificamos si el historial tiene elementos
+        List<String> historialActual = historialService.obtenerHistorial(username);
+
+        if (historialActual.isEmpty()) {
             return ResponseEntity.ok(ApiResponse.ok("** NO HAY ACCIONES ANTERIORES **"));
         }
-        return ResponseEntity.ok(ApiResponse.ok("Accion anterior recuperada", anterior));
+
+        // Usamos el método correcto que definimos en HistorialService (hace el POP a la pila)
+        historialService.deshacerUltimaAccion(username);
+
+        return ResponseEntity.ok(ApiResponse.ok("Accion anterior eliminada del historial exitosamente"));
     }
 }
