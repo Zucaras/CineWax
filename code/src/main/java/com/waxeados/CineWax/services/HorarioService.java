@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Servicio de horarios de cartelera.
- * Usa Cola para procesar solicitudes de alta de horarios en orden FIFO.
- * Usa QuickSort para ordenar la cartelera.
+ * Servicio de horarios de cartelera
+ * Usa Cola para procesar solicitudes de alta de horarios en orden FIFO
+ * Usa QuickSort para ordenar la cartelera
  */
 @Service
 @RequiredArgsConstructor
@@ -38,39 +38,38 @@ public class HorarioService {
     private final Cola<HorarioDTO> colaSolicitudes = new Cola<>();
     private final Queue<HorarioDTO> colaPendientes = new LinkedList<>();
 
-    // ==================== ALTA HORARIO ====================
-
+    // ALTA HORARIO
     /**
-     * Encola una solicitud de horario para procesarla en orden FIFO.
-     * (Administrador opción 2)
+     * Encola una solicitud de horario para procesarla en orden FIFO
+     * (Administrador opcion 2)
      */
     public void encolarSolicitudHorario(HorarioDTO dto) {
         colaSolicitudes.enqueue(dto);
     }
 
     /**
-     * Procesa la siguiente solicitud de la cola.
-     * Retorna el horario creado o lanza excepción si hay conflicto.
+     * Procesa la siguiente solicitud de la cola
+     * Retorna el horario creado o lanza excepción si hay conflicto
      */
     @Transactional
     public HorarioCartelera procesarSiguienteSolicitud() {
         if (colaSolicitudes.estaVacia()) {
-            throw new IllegalStateException("No hay solicitudes pendientes en la cola.");
+            throw new IllegalStateException("** NO HAY SOLICITUDES PENDIENTES EN LA COLA **");
         }
         HorarioDTO dto = colaSolicitudes.dequeue();
         return altaHorario(dto);
     }
 
     /**
-     * Alta de horario directa (sin cola).
-     * Valida que no se empalmen salas, días y horarios.
-     * Máximo 10 horarios por película por día.
+     * Alta de horario directa (sin cola)
+     * Valida que no se empalmen salas, días y horarios
+     * Máximo 10 horarios por película por dia
      */
     @Transactional
     public HorarioCartelera altaHorario(HorarioDTO dto) {
         Pelicula pelicula = peliculaRepository.findById(dto.getIdPelicula())
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Película no encontrada con ID: " + dto.getIdPelicula()));
+                        "Pelicula no encontrada con ID: " + dto.getIdPelicula()));
 
         Sala sala = salaRepository.findById(dto.getIdSala())
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -84,8 +83,8 @@ public class HorarioService {
 
         if (countPorDia >= 10) {
             throw new IllegalArgumentException(
-                    "La película ya tiene 10 horarios para la fecha: " + dto.getFechaProyeccion()
-                            + ". Máximo permitido: 10.");
+                    "La pelicula ya tiene 10 horarios para la fecha: " + dto.getFechaProyeccion()
+                            + ". Maximo permitido: 10.");
         }
 
         // Calcular hora fin estimada: hora inicio + duración + 30 min buffer
@@ -107,10 +106,10 @@ public class HorarioService {
         return horarioRepository.save(horario);
     }
 
-    // ==================== BAJA HORARIO ====================
+    // BAJA HORARIO
 
     /**
-     * Baja de horario (Administrador opción 4).
+     * Baja de horario (Administrador opcion 4)
      */
     @Transactional
     public void bajaHorario(Integer idHorario) {
@@ -120,16 +119,16 @@ public class HorarioService {
         horarioRepository.delete(horario);
     }
 
-    // ==================== VALIDACIÓN DE EMPALME ====================
+    // VALIDACION DE EMPALME
 
     /**
      * Valida que el nuevo horario no se empalme con los existentes en la misma sala y fecha.
-     * Se requieren 30 min de buffer entre películas.
+     * Se requieren 30 min de buffer entre peliculas.
      *
      * @param idSala          ID de la sala
-     * @param fecha           fecha de proyección
+     * @param fecha           fecha de proyeccion
      * @param nuevaHoraInicio hora de inicio propuesta
-     * @param nuevaHoraFin    hora fin estimada (duración + 30 min)
+     * @param nuevaHoraFin    hora fin estimada (duracion + 30 min)
      * @param excludeId       ID de horario a excluir (para modificaciones), puede ser null
      */
     public void validarEmpalme(Integer idSala, java.time.LocalDate fecha,
@@ -139,7 +138,7 @@ public class HorarioService {
         List<HorarioCartelera> existentes = horarioRepository.findBySalaAndFecha(idSala, fecha);
 
         for (HorarioCartelera existente : existentes) {
-            // Excluir el horario que se está modificando
+            // Excluir el horario que se esta modificando
             if (existente.getIdHorario().equals(excludeId)) {
                 continue;
             }
@@ -166,11 +165,11 @@ public class HorarioService {
         }
     }
 
-    // ==================== CONSULTAR CARTELERA ====================
+    // CONSULTAR CARTELERA
 
     /**
-     * Consultar cartelera de un municipio (Administrador opción 7 / Cliente opción 6).
-     * Usa QuickSort para ordenar por fecha y hora.
+     * Consultar cartelera de un municipio (Administrador opcion 7 / Cliente opcion 6)
+     * Usa QuickSort para ordenar por fecha y hora
      *
      * @param idMunicipio ID del municipio
      * @param ascendente  true = menor a mayor, false = mayor a menor
@@ -178,7 +177,6 @@ public class HorarioService {
     public List<CarteleraDTO> consultarCartelera(String idMunicipio, boolean ascendente) {
         List<HorarioCartelera> horarios = horarioRepository.findByMunicipio(idMunicipio);
 
-        // Ordenar usando QuickSort (estructura obligatoria)
         QuickSort.ordenar(horarios, ascendente);
 
         return horarios.stream()
@@ -187,7 +185,7 @@ public class HorarioService {
     }
 
     /**
-     * Consultar cartelera de un municipio por rango de fechas.
+     * Consultar cartelera de un municipio por rango de fechas
      */
     public List<CarteleraDTO> consultarCarteleraRango(String idMunicipio,
                                                        java.time.LocalDate fechaInicio,
@@ -210,7 +208,7 @@ public class HorarioService {
     }
 
     /**
-     * Obtener horarios de una película específica.
+     * Obtener horarios de una pelicula especifica
      */
     public List<CarteleraDTO> obtenerHorariosPelicula(Integer idPelicula) {
         List<HorarioCartelera> horarios = horarioRepository.findByPelicula_IdPelicula(idPelicula);
@@ -222,7 +220,7 @@ public class HorarioService {
                 .collect(Collectors.toList());
     }
 
-    // ==================== COLA ====================
+    // COLA
 
     public void encolarHorario(HorarioDTO dto) {
         colaPendientes.offer(dto); // Agrega a la fila
@@ -233,7 +231,6 @@ public class HorarioService {
         while (!colaPendientes.isEmpty()) {
             HorarioDTO dto = colaPendientes.poll(); // Saca el primero en la fila
 
-            // Aquí llamas a tu método normal de alta que ya tenías para que lo guarde en BD
             this.altaHorario(dto);
             procesados++;
         }
@@ -241,15 +238,15 @@ public class HorarioService {
     }
 
     /**
-     * Obtener solicitudes pendientes en la cola.
+     * Obtener solicitudes pendientes en la cola
      */
     public List<HorarioDTO> obtenerSolicitudesPendientes() {
         return colaSolicitudes.toList();
     }
 
     /**
-     * Procesar todas las solicitudes pendientes.
-     * Retorna los horarios creados exitosamente y los errores.
+     * Procesar todas las solicitudes pendientes
+     * Retorna los horarios creados exitosamente y los errores
      */
     @Transactional
     public List<String> procesarTodasLasSolicitudes() {

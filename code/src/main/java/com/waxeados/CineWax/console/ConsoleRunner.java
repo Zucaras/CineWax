@@ -37,7 +37,6 @@ public class ConsoleRunner implements CommandLineRunner {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    // Usuario logueado actualmente
     private Usuario usuarioActual = null;
 
     @Override
@@ -47,7 +46,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  MENÚ PRINCIPAL
+    //  MENU PRINCIPAL
     // ══════════════════════════════════════════════════════════
 
     private void menuPrincipal() {
@@ -130,7 +129,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  MENÚ ADMINISTRADOR
+    //  MENU ADMINISTRADOR
     // ══════════════════════════════════════════════════════════
 
     private void menuAdmin() {
@@ -145,7 +144,7 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  5. Modificar Pelicula           ║");
             System.out.println("║  6. Consultar Pelicula           ║");
             System.out.println("║  7. Consultar Cartelera          ║");
-            System.out.println("║  8. Procesar Cola de Horarios    ║"); // <-- APLICACIÓN DE ESTRUCTURA: COLA
+            System.out.println("║  8. Procesar Cola de Horarios    ║"); // <-- APLICACION DE ESTRUCTURA: COLA
             System.out.println("║  9. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
@@ -167,7 +166,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  MENÚ CLIENTE
+    //  MENU CLIENTE
     // ══════════════════════════════════════════════════════════
 
     private void menuCliente() {
@@ -178,11 +177,11 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  1. Buscar pelicula por nombre   ║");
             System.out.println("║  2. Buscar por clasificacion     ║");
             System.out.println("║  3. Buscar por genero            ║");
-            System.out.println("║  4. Ordenar Cartelera (QuickSort)║"); // <-- APLICACIÓN DE ESTRUCTURA: QUICKSORT
+            System.out.println("║  4. Ordenar Cartelera            ║"); // <-- APLICACION DE ESTRUCTURA: QUICKSORT
             System.out.println("║  5. Consultar Pelicula           ║");
             System.out.println("║  6. Consultar Cartelera          ║");
-            System.out.println("║  7. Ver mi Historial (Pila)      ║"); // <-- APLICACIÓN DE ESTRUCTURA: PILA
-            System.out.println("║  8. Ruta entre Sucursales (Grafo)║"); // <-- APLICACIÓN DE ESTRUCTURA: GRAFO
+            System.out.println("║  7. Ver mi Historial             ║"); // <-- APLICACION DE ESTRUCTURA: PILA
+            System.out.println("║  8. Ruta entre Sucursales        ║"); // <-- APLICACION DE ESTRUCTURA: GRAFO
             System.out.println("║  9. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
@@ -204,7 +203,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  NUEVAS FUNCIONES DE ESTRUCTURAS DE DATOS EXPLÍCITAS
+    // ESTRUCTURAS DE DATOS
     // ══════════════════════════════════════════════════════════
 
     // --- COLA (QUEUE) ---
@@ -214,7 +213,7 @@ public class ConsoleRunner implements CommandLineRunner {
             int procesados = horarioService.procesarColaPendientes();
 
             if (procesados == 0) {
-                System.out.println("** LA COLA ESTÁ VACÍA. NO HAY HORARIOS POR PROCESAR **");
+                System.out.println("** LA COLA ESTA VACIA. NO HAY HORARIOS POR PROCESAR **");
             } else {
                 System.out.println("** SE PROCESARON EXITOSAMENTE " + procesados + " HORARIOS DE LA COLA (FIFO) **");
             }
@@ -225,7 +224,7 @@ public class ConsoleRunner implements CommandLineRunner {
 
     // --- PILA (STACK) ---
     private void verHistorial() {
-        System.out.println("\n--- MI HISTORIAL DE BÚSQUEDAS (PILA / LIFO) ---");
+        System.out.println("\n--- MI HISTORIAL DE BUSQUEDAS (PILA / LIFO) ---");
         try {
             List<String> acciones = historialService.obtenerHistorial(usuarioActual.getUsername());
 
@@ -252,8 +251,8 @@ public class ConsoleRunner implements CommandLineRunner {
 
     // --- GRAFOS (FLOYD-WARSHALL) ---
     private void calcularRutaCorta() {
-        System.out.println("\n--- CALCULAR RUTA ÓPTIMA ENTRE SUCURSALES (GRAFOS) ---");
-        System.out.println("Nota: El cálculo se realiza entre sucursales del mismo estado.");
+        System.out.println("\n--- CALCULAR RUTA OPTIMA ENTRE SUCURSALES (GRAFOS) ---");
+        System.out.println("Nota: El calculo se realiza entre sucursales del mismo estado.");
 
         System.out.println("\n[ SELECCIONE EL ESTADO ] (Escriba '0' para abortar)");
         String idEstado = seleccionarEstado();
@@ -280,9 +279,9 @@ public class ConsoleRunner implements CommandLineRunner {
             // Calculamos un tiempo estimado (ej. 1.5 minutos por km recorrido)
             int tiempoEstimado = (int) (distancia * 1.5);
 
-            System.out.println("\n||- RUTA MÁS CORTA CALCULADA -||");
+            System.out.println("\n||- RUTA MAS CORTA CALCULADA -||");
             // Unimos la lista de nodos devueltos por tu algoritmo con una flechita visual
-            System.out.println("  Ruta óptima:     " + String.join(" -> ", camino).toUpperCase());
+            System.out.println("  Ruta optima:     " + String.join(" -> ", camino).toUpperCase());
             System.out.println("  Distancia total: " + distancia + " km");
             System.out.println("  Tiempo estimado: " + tiempoEstimado + " minutos");
 
@@ -525,7 +524,7 @@ public class ConsoleRunner implements CommandLineRunner {
                 System.out.print("Fecha de inicio (dd/MM/yyyy): ");
                 LocalDate inicio = leerFecha();
 
-                // VALIDACIÓN LÓGICA DE FECHAS
+                // VALIDACION LOGICA DE FECHAS
                 LocalDate fin = null;
                 while (true) {
                     System.out.print("Fecha de fin (dd/MM/yyyy): ");
@@ -560,7 +559,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  FUNCIONES CLIENTE (BÚSQUEDAS ORIGINALES)
+    //  FUNCIONES CLIENTE (BUSQUEDAS ORIGINALES)
     // ══════════════════════════════════════════════════════════
 
     private void buscarPorNombre() {
@@ -672,7 +671,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  HELPERS DE CANCELACIÓN GLOBAL
+    //  HELPERS DE CANCELACION GLOBAL
     // ══════════════════════════════════════════════════════════
 
     private boolean esCancelacionString(String input) {
@@ -680,7 +679,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  HELPERS DE SELECCIÓN Y VALIDACIÓN
+    //  HELPERS DE SELECCION Y VALIDACION
     // ══════════════════════════════════════════════════════════
 
     private String seleccionarEstado() {
@@ -941,7 +940,7 @@ public class ConsoleRunner implements CommandLineRunner {
     }
 
     // ══════════════════════════════════════════════════════════
-    //  HELPERS DE IMPRESIÓN GENERAL
+    //  HELPERS DE IMPRESION GENERAL
     // ══════════════════════════════════════════════════════════
 
     private void imprimirCartelera(List<CarteleraDTO> cartelera) {

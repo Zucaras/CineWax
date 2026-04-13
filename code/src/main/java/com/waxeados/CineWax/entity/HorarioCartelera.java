@@ -35,13 +35,12 @@ public class HorarioCartelera {
     private LocalTime horaInicio;
 
     // hora_inicio + duracion_min + 30 min de limpieza
-    // Se calcula en la capa de servicio antes de persistir
     @Column(name = "hora_fin_estimada", nullable = false)
     private LocalTime horaFinEstimada;
 
     /**
-     * Calcula y asigna hora_fin_estimada automáticamente antes de insertar o actualizar.
-     * Suma la duración de la película + 30 minutos de buffer a hora_inicio.
+     * Calcula y asigna hora_fin_estimada automaticamente antes de insertar o actualizar
+     * Suma la duración de la pelicula + 30 minutos de buffer a hora_inicio
      */
     @PrePersist
     @PreUpdate

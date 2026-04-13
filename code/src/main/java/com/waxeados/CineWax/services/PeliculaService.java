@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Servicio principal de películas.
- * Usa ListaEnlazada para almacenamiento en memoria y búsquedas recursivas.
+ * Servicio principal de peliculas
+ * Usa ListaEnlazada para almacenamiento en memoria y busquedas recursivas
  */
 @Service
 @RequiredArgsConstructor
@@ -23,11 +23,11 @@ public class PeliculaService {
     private final GeneroRepository generoRepository;
     private final HorarioCarteleraRepository horarioRepository;
 
-    // ==================== ALTA ====================
+    // ALTA
 
     /**
-     * Alta de película (Administrador opción 1).
-     * Valida que no exista otra con el mismo nombre.
+     * Alta de película (Administrador opcion 1)
+     * Valida que no exista otra con el mismo nombre
      */
     @Transactional
     public Pelicula altaPelicula(PeliculaDTO dto) {
@@ -50,11 +50,11 @@ public class PeliculaService {
         return peliculaRepository.save(pelicula);
     }
 
-    // ==================== BAJA ====================
+    // BAJA
 
     /**
-     * Baja de película (Administrador opción 3).
-     * Elimina la película y todos sus horarios asociados.
+     * Baja de pelicula (Administrador opcion 3)
+     * Elimina la pelicula y todos sus horarios asociados
      */
     @Transactional
     public void bajaPelicula(Integer idPelicula) {
@@ -66,10 +66,10 @@ public class PeliculaService {
         peliculaRepository.delete(pelicula);
     }
 
-    // ==================== MODIFICAR ====================
+    // MODIFICAR
 
     /**
-     * Modificar película (Administrador opción 5).
+     * Modificar pelicula (Administrador opcion 5).
      * Se pueden modificar todos los campos excepto los horarios.
      */
     @Transactional
@@ -77,7 +77,7 @@ public class PeliculaService {
         Pelicula pelicula = peliculaRepository.findById(idPelicula)
                 .orElseThrow(() -> new IllegalArgumentException("** PELICULA NO ENCONTRADA CON ID: " + idPelicula + " **"));
 
-        // Verificar que el nuevo nombre no colisione con otra película
+        // Verificar que el nuevo nombre no colisione con otra pelicula
         if (!pelicula.getNombre().equalsIgnoreCase(dto.getNombre())
                 && peliculaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
             throw new IllegalArgumentException("** YA EXISTE UNA PELICULA CON EL NOMBRE: " + dto.getNombre()+ " **");
@@ -96,10 +96,10 @@ public class PeliculaService {
         return peliculaRepository.save(pelicula);
     }
 
-    // ==================== CONSULTAR ====================
+    // CONSULTAR
 
     /**
-     * Consultar película (Administrador opción 6 / Cliente opción 5).
+     * Consultar pelicula (Administrador opcion 6 / Cliente opcion 5).
      */
     public Pelicula consultarPelicula(Integer idPelicula) {
         return peliculaRepository.findById(idPelicula)
@@ -107,22 +107,22 @@ public class PeliculaService {
     }
 
     /**
-     * Listar todas las películas.
+     * Listar todas las peliculas
      */
     public List<Pelicula> listarPeliculas() {
         return peliculaRepository.findAll();
     }
 
-    // ==================== BÚSQUEDAS (Cliente) ====================
+    // BUSQUEDAS (Cliente)
 
     /**
-     * Buscar película por nombre (Cliente opción 1).
-     * Usa ListaEnlazada con búsqueda recursiva.
+     * Buscar pelicula por nombre (Cliente opcion 1)
+     * Usa ListaEnlazada con busqueda recursiva
      */
     public List<Pelicula> buscarPorNombre(String nombre) {
         List<Pelicula> todas = peliculaRepository.findAll();
 
-        // Cargar en lista enlazada para usar búsqueda recursiva
+        // Cargar en lista enlazada para usar busqueda recursiva
         ListaEnlazada<Pelicula> lista = new ListaEnlazada<>();
         todas.forEach(lista::agregarFinal);
 
@@ -139,8 +139,8 @@ public class PeliculaService {
     }
 
     /**
-     * Buscar película por clasificación (Cliente opción 2).
-     * Usa ListaEnlazada con búsqueda recursiva.
+     * Buscar pelicula por clasificacion (Cliente opcion 2)
+     * Usa ListaEnlazada con busqueda recursiva
      */
     public List<Pelicula> buscarPorClasificacion(String clasificacion) {
         List<Pelicula> todas = peliculaRepository.findAll();
@@ -169,8 +169,8 @@ public class PeliculaService {
     }
 
     /**
-     * Buscar película por género (Cliente opción 3).
-     * Usa ListaEnlazada con búsqueda recursiva.
+     * Buscar pelicula por genero (Cliente opcion 3)
+     * Usa ListaEnlazada con busqueda recursiva
      */
     public List<Pelicula> buscarPorGenero(Integer idGenero) {
         List<Pelicula> todas = peliculaRepository.findAll();
@@ -197,7 +197,4 @@ public class PeliculaService {
         }
         return resultadoList;
     }
-
-    // ==================== HELPERS ====================
-
 }

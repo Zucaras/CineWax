@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Servicio que usa el algoritmo Floyd-Warshall para calcular distancias
  * entre municipios de un mismo estado.
- * JUSTIFICACIÓN: Permite sugerir al cliente en qué municipio cercano
+ * JUSTIFICACIÓN: Permite sugerir al cliente en que municipio cercano
  * hay funciones disponibles si en el suyo no hay, o encontrar la ruta
  * más corta entre municipios.
  */
@@ -25,11 +25,7 @@ public class FloydService {
     // Un grafo Floyd por cada estado
     private final Map<String, FloydWarshall> grafosPorEstado = new HashMap<>();
 
-    /**
-     * Inicializa los grafos Floyd al arrancar la aplicación.
-     * Se asignan distancias simuladas entre municipios de cada estado
-     * (en un proyecto real, se usarían distancias reales en km).
-     */
+
     @PostConstruct
     public void inicializar() {
         // IDs de los 5 estados
@@ -45,7 +41,6 @@ public class FloydService {
             }
 
             // Generar distancias simuladas entre municipios adyacentes
-            // (consecutivos en la lista tienen distancias menores)
             Map<String, Map<String, Integer>> distancias = new HashMap<>();
             for (int i = 0; i < nodos.size(); i++) {
                 Map<String, Integer> vecinos = new HashMap<>();
@@ -75,7 +70,7 @@ public class FloydService {
     }
 
     /**
-     * Obtener distancia entre dos municipios del mismo estado.
+     * Obtener distancia entre dos municipios del mismo estado
      */
     public int getDistancia(String idEstado, String origen, String destino) {
         FloydWarshall floyd = grafosPorEstado.get(idEstado);
@@ -86,8 +81,8 @@ public class FloydService {
     }
 
     /**
-     * Obtener el camino más corto entre dos municipios.
-     * Usa RECURSIVIDAD interna en FloydWarshall.getCamino().
+     * Obtener el camino mas corto entre dos municipios
+     * Usa RECURSIVIDAD interna en FloydWarshall.getCamino()
      */
     public List<String> getCamino(String idEstado, String origen, String destino) {
         FloydWarshall floyd = grafosPorEstado.get(idEstado);
@@ -98,7 +93,7 @@ public class FloydService {
     }
 
     /**
-     * Obtener los municipios más cercanos a uno dado, ordenados por distancia.
+     * Obtener los municipios mas cercanos a uno dado, ordenados por distancia
      */
     public List<Map.Entry<String, Integer>> getMunicipiosCercanos(String idEstado, String idMunicipio) {
         FloydWarshall floyd = grafosPorEstado.get(idEstado);

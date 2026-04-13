@@ -27,7 +27,7 @@ public class DataSeeder implements CommandLineRunner {
         // Verificamos si la tabla "estado" está vacía
         if (estadoRepository.count() == 0) {
             System.out.println("\n======================================================");
-            System.out.println("🎬 DATA SEEDER: Inicializando base de datos por primera vez...");
+            System.out.println("DATA SEEDER: Inicializando base de datos por primera vez...");
             System.out.println("======================================================");
 
             try (Connection connection = dataSource.getConnection()) {
@@ -36,12 +36,12 @@ public class DataSeeder implements CommandLineRunner {
                         connection,
                         new ClassPathResource("data.sql")
                 );
-                System.out.println("✅ Base de datos poblada exitosamente.\n");
+                System.out.println("Base de datos poblada exitosamente.\n");
             } catch (Exception e) {
-                System.out.println("❌ Error al inicializar los datos: " + e.getMessage());
+                System.out.println("Error al inicializar los datos: " + e.getMessage());
             }
         } else {
-            System.out.println("\n✅ Datos ya existentes. Saltando DataSeeder.\n");
+            System.out.println("\nDatos ya existentes. Saltando DataSeeder.\n");
         }
     }
 }
