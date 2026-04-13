@@ -31,7 +31,7 @@ public class HistorialService {
     public List<String> obtenerHistorial(String username) {
         if (!historiales.containsKey(username)) return new ArrayList<>();
 
-        // Convertimos la pila en lista para imprimirla (y la volteamos para ver lo más nuevo primero)
+        // Convertimos la pila en lista para imprimirla (y la volteamos para ver lo mqs nuevo primero)
         List<String> lista = new ArrayList<>(historiales.get(username));
         Collections.reverse(lista);
         return lista;
@@ -39,7 +39,7 @@ public class HistorialService {
 
     public void deshacerUltimaAccion(String username) {
         if (historiales.containsKey(username) && !historiales.get(username).isEmpty()) {
-            historiales.get(username).pop(); // Elimina la última acción (POP)
+            historiales.get(username).pop(); // Elimina la ultima accion (POP)
         }
     }
 }

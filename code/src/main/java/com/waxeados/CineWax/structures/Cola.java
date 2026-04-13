@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementación de Cola (Queue) genérica.
- * JUSTIFICACIÓN: Se usa una cola para procesar las solicitudes pendientes
+ * Se usa una cola para procesar las solicitudes pendientes
  * de alta de horarios en orden FIFO (First In, First Out).
- * Cuando múltiples administradores intentan agregar horarios simultáneamente,
+ * Cuando multiples administradores intentan agregar horarios simultaneamente,
  * la cola garantiza que se procesen en el orden en que llegaron, evitando
- * conflictos de empalme.
+ * conflictos de empalme
  */
 public class Cola<T> {
 
@@ -19,12 +18,12 @@ public class Cola<T> {
         this.datos = new ListaEnlazada<>();
     }
 
-    /** Encola un elemento al final. O(n) */
+    /** Encola un elemento al final */
     public void enqueue(T elemento) {
         datos.agregarFinal(elemento);
     }
 
-    /** Desencola y retorna el primer elemento. O(1) */
+    /** Desencola y retorna el primer elemento */
     public T dequeue() {
         if (estaVacia()) throw new IllegalStateException("** LA COLA ESTA VACIA **");
         T frente = datos.obtener(0);
@@ -32,7 +31,7 @@ public class Cola<T> {
         return frente;
     }
 
-    /** Consulta el primer elemento sin desencolar. O(1) */
+    /** Consulta el primer elemento sin desencolar */
     public T peek() {
         if (estaVacia()) throw new IllegalStateException("** LA COLA ESTA VACIA **");
         return datos.obtener(0);
@@ -46,7 +45,7 @@ public class Cola<T> {
         return datos.getTamanio();
     }
 
-    /** Retorna todos los elementos como lista (del frente al final). */
+    /** Retorna todos los elementos como lista (del frente al final) */
     public List<T> toList() {
         List<T> lista = new ArrayList<>();
         for (T elem : datos) {

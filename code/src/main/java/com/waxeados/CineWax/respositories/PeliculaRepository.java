@@ -6,16 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-// Repository interface for Movie entity to handle database operations
 @Repository
 public interface PeliculaRepository extends JpaRepository<Pelicula, Integer> {
-    
-    // Spring Data JPA will automatically implement this query based on the method name
-    boolean existsByNombreIgnoreCase(String nombre);
 
+    boolean existsByNombreIgnoreCase(String nombre);
     List<Pelicula> findByNombreContainingIgnoreCase(String nombre);
- 
     List<Pelicula> findByClasificacionIgnoreCase(String clasificacion);
- 
     List<Pelicula> findByGenero_IdGenero(Integer idGenero);
 }

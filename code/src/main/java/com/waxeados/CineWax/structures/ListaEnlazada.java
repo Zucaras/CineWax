@@ -5,12 +5,11 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 /**
- * Lista enlazada simple genérica.
- * JUSTIFICACIÓN: Se usa una lista enlazada para almacenar las películas
- * de cada municipio en memoria. Las listas enlazadas permiten inserción y
- * eliminación eficiente O(1) en el frente, lo cual es útil para agregar/quitar
- * películas dinámicamente sin necesidad de redimensionar arreglos.
- * También se usa para la búsqueda secuencial por nombre, clasificación y género.
+ * Se usa una lista enlazada para almacenar las peliculas
+ * de cada municipio en memoria. Las listas enlazadas permiten insercion y
+ * eliminacion eficiente O(1) en el frente, lo cual es util para agregar/quitar
+ * peliculas dinamicamente sin necesidad de redimensionar arreglos
+ * Tambien se usa para la búsqueda secuencial por nombre, clasificacion y genero.
  */
 public class ListaEnlazada<T> implements Iterable<T> {
 
@@ -32,7 +31,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
         this.tamanio = 0;
     }
 
-    /** Agrega un elemento al inicio de la lista. O(1) */
+    /** Agrega un elemento al inicio de la lista*/
     public void agregarInicio(T dato) {
         Nodo<T> nuevo = new Nodo<>(dato);
         nuevo.siguiente = cabeza;
@@ -40,7 +39,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
         tamanio++;
     }
 
-    /** Agrega un elemento al final de la lista. O(n) */
+    /** Agrega un elemento al final de la lista */
     public void agregarFinal(T dato) {
         Nodo<T> nuevo = new Nodo<>(dato);
         if (cabeza == null) {
@@ -55,7 +54,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
         tamanio++;
     }
 
-    /** Elimina el primer elemento que cumpla el predicado. Retorna true si se eliminó. */
+    /** Elimina el primer elemento que cumpla el predicado. Retorna true si se elimino */
     public boolean eliminar(Predicate<T> condicion) {
         if (cabeza == null) return false;
 
@@ -77,7 +76,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
         return false;
     }
 
-    /** Busca un elemento por predicado. Retorna null si no lo encuentra. */
+    /** Busca un elemento por predicado. Retorna null si no lo encuentra */
     public T buscar(Predicate<T> condicion) {
         Nodo<T> actual = cabeza;
         while (actual != null) {
@@ -88,7 +87,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
     }
 
     /**
-     * Busca un elemento usando RECURSIVIDAD.
+     * Busca un elemento usando RECURSIVIDAD
      */
     public T buscarRecursivo(Predicate<T> condicion) {
         return buscarRecursivoHelper(cabeza, condicion);
@@ -101,7 +100,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
     }
 
     /**
-     * Cuenta elementos que cumplen un predicado usando RECURSIVIDAD.
+     * Cuenta elementos que cumplen un predicado usando RECURSIVIDAD
      */
     public int contarRecursivo(Predicate<T> condicion) {
         return contarRecursivoHelper(cabeza, condicion);
@@ -113,7 +112,7 @@ public class ListaEnlazada<T> implements Iterable<T> {
         return cuenta + contarRecursivoHelper(nodo.siguiente, condicion);
     }
 
-    /** Retorna una nueva lista con los elementos que cumplen el predicado. */
+    /** Retorna una nueva lista con los elementos que cumplen el predicado */
     public ListaEnlazada<T> filtrar(Predicate<T> condicion) {
         ListaEnlazada<T> resultado = new ListaEnlazada<>();
         Nodo<T> actual = cabeza;

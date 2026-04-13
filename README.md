@@ -1,10 +1,10 @@
-# 🍿 CineWax - Sistema de Cartelera de Cines
+# CineWax - Sistema de Cartelera de Cines
 
 CineWax es un sistema backend desarrollado en ```Java (Spring Boot)``` diseñado para gestionar la cartelera de una cadena de cines a nivel estatal. El sistema permite administrar películas, horarios, salas y sucursales (municipios), ofreciendo una interfaz interactiva por consola para Administradores y Clientes.
 
 ---
 
-## 🛠️ 1. Tecnologías y Versiones Requeridas
+## 1. Tecnologías y Versiones Requeridas
 
 Para poder levantar este proyecto en un entorno local, necesitas tener instaladas las siguientes herramientas:
 
@@ -15,7 +15,7 @@ Para poder levantar este proyecto en un entorno local, necesitas tener instalada
 
 ---
 
-## 📦 2. Descarga e Instalación
+## 2. Descarga e Instalación
 
 ### Paso 1: Obtener el código
 Clona el repositorio en tu máquina local o descarga el código fuente y descomprímelo.
@@ -50,7 +50,7 @@ Abre la clase principal ```src/main/java/com/waxeados/CineWax/CineWaxApplication
 
 ---
 
-## 🏛️ 3. Arquitectura del Proyecto
+## 3. Arquitectura del Proyecto
 
 El proyecto sigue una **Arquitectura en Capas (Layered Architecture)** estándar de Spring Boot, separando claramente las responsabilidades del sistema.
 
@@ -75,7 +75,7 @@ El proyecto sigue una **Arquitectura en Capas (Layered Architecture)** estándar
 
 ---
 
-## 🧮 4. Estructuras de Datos y Algoritmos Utilizados
+## 4. Estructuras de Datos y Algoritmos Utilizados
 
 El sistema integra algoritmos y estructuras de datos clásicas para resolver problemas específicos del negocio en memoria:
 
@@ -87,7 +87,7 @@ El sistema integra algoritmos y estructuras de datos clásicas para resolver pro
 
 ---
 
-## 🔒 5. Notas de Seguridad y Credenciales
+## 5. Notas de Seguridad y Credenciales
 
 * **Contraseñas:** Las contraseñas de los usuarios nunca se guardan en texto plano; se utiliza ```BCryptPasswordEncoder``` para aplicar un hash criptográfico en la base de datos.
 * **Tipos de Usuario:** El sistema diferencia entre roles (```ADMINISTRADOR``` y ```CLIENTE```). Los administradores tienen restricciones de alcance ligadas a su ```idMunicipio```.

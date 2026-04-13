@@ -6,7 +6,7 @@ import com.waxeados.CineWax.entity.HorarioCartelera;
 import org.springframework.stereotype.Component;
 
 /**
- * Componente para convertir entre entidades HorarioCartelera y DTOs.
+ * Componente para convertir entre entidades HorarioCartelera y DTOs
  */
 @Component
 public class HorarioMapper {
