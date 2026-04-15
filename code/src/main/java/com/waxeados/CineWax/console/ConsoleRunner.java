@@ -144,7 +144,7 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  5. Modificar Pelicula           ║");
             System.out.println("║  6. Consultar Pelicula           ║");
             System.out.println("║  7. Consultar Cartelera          ║");
-            System.out.println("║  8. Procesar Cola de Horarios    ║"); // <-- APLICACION DE ESTRUCTURA: COLA
+            System.out.println("║  8. Procesar Cola de Horarios    ║");
             System.out.println("║  9. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
@@ -177,11 +177,11 @@ public class ConsoleRunner implements CommandLineRunner {
             System.out.println("║  1. Buscar pelicula por nombre   ║");
             System.out.println("║  2. Buscar por clasificacion     ║");
             System.out.println("║  3. Buscar por genero            ║");
-            System.out.println("║  4. Ordenar Cartelera            ║"); // <-- APLICACION DE ESTRUCTURA: QUICKSORT
+            System.out.println("║  4. Ordenar Cartelera            ║");
             System.out.println("║  5. Consultar Pelicula           ║");
             System.out.println("║  6. Consultar Cartelera          ║");
-            System.out.println("║  7. Ver mi Historial             ║"); // <-- APLICACION DE ESTRUCTURA: PILA
-            System.out.println("║  8. Ruta entre Sucursales        ║"); // <-- APLICACION DE ESTRUCTURA: GRAFO
+            System.out.println("║  7. Ver mi Historial             ║");
+            System.out.println("║  8. Ruta entre Sucursales        ║");
             System.out.println("║  9. Cerrar Sesion                ║");
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Opcion: ");
@@ -249,7 +249,7 @@ public class ConsoleRunner implements CommandLineRunner {
         }
     }
 
-    // --- GRAFOS (FLOYD-WARSHALL) ---
+    // --- GRAFOS (FLOYDWARSHALL) ---
     private void calcularRutaCorta() {
         System.out.println("\n--- CALCULAR RUTA OPTIMA ENTRE SUCURSALES (GRAFOS) ---");
         System.out.println("Nota: El calculo se realiza entre sucursales del mismo estado.");
@@ -655,7 +655,7 @@ public class ConsoleRunner implements CommandLineRunner {
         try {
             historialService.registrarAccion(usuarioActual.getUsername(), "ORDENAR_CARTELERA",
                     idMunicipio + (asc ? " ASC" : " DESC"));
-            List<CarteleraDTO> cartelera = horarioService.consultarCartelera(idMunicipio, asc);
+            List<CarteleraDTO> cartelera = horarioService.consultarCartelera(idMunicipio, asc); // QUICKSORT
 
             String dir = asc ? "ASCENDENTE" : "DESCENDENTE";
             System.out.println("\n||-CARTELERA ORDENADA " + dir + " (QUICKSORT)-||");

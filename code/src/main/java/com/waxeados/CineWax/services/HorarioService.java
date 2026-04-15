@@ -168,16 +168,14 @@ public class HorarioService {
     // CONSULTAR CARTELERA
 
     /**
-     * Consultar cartelera de un municipio (Administrador opcion 7 / Cliente opcion 6)
-     * Usa QuickSort para ordenar por fecha y hora
-     *
+     * Para ordenar por fecha y hora
      * @param idMunicipio ID del municipio
      * @param ascendente  true = menor a mayor, false = mayor a menor
      */
     public List<CarteleraDTO> consultarCartelera(String idMunicipio, boolean ascendente) {
         List<HorarioCartelera> horarios = horarioRepository.findByMunicipio(idMunicipio);
 
-        QuickSort.ordenar(horarios, ascendente);
+        QuickSort.ordenar(horarios, ascendente); // QUICKSORT
 
         return horarios.stream()
                 .map(horarioMapper::toCarteleraDTO)

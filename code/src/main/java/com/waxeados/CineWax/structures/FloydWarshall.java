@@ -3,13 +3,12 @@ package com.waxeados.CineWax.structures;
 import java.util.*;
 
 /**
- * Implementación del algoritmo Floyd-Warshall.
  * Se usa Floyd para calcular las distancias mas cortas entre
  * todos los municipios de un estado. Esto permite al sistema sugerir al cliente
- * en qué municipio cercano hay funciones disponibles si en el suyo no hay,
- * o para mostrar la ruta más corta entre municipios.
+ * en que municipio cercano hay funciones disponibles si en el suyo no hay,
+ * o para mostrar la ruta más corta entre municipios
  * Floyd es ideal porque necesitamos las distancias entre TODOS los pares de nodos
- * , no solo de un origen a los demas.
+ * , no solo de un origen a los demas
  */
 public class FloydWarshall {
 

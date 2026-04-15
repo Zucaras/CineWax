@@ -11,10 +11,10 @@ import java.util.*;
 
 /**
  * Servicio que usa el algoritmo Floyd-Warshall para calcular distancias
- * entre municipios de un mismo estado.
- * JUSTIFICACIÓN: Permite sugerir al cliente en que municipio cercano
+ * entre municipios de un mismo estado
+ * Permite sugerir al cliente en que municipio cercano
  * hay funciones disponibles si en el suyo no hay, o encontrar la ruta
- * más corta entre municipios.
+ * mas corta entre municipios
  */
 @Service
 @RequiredArgsConstructor
@@ -60,7 +60,6 @@ public class FloydService {
                 if (i - 2 >= 0) {
                     vecinos.put(nodos.get(i - 2), 30 + (i * 7) % 40);
                 }
-
                 distancias.put(nodos.get(i), vecinos);
             }
 
