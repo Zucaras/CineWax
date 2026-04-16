@@ -34,8 +34,7 @@ public class ClienteController {
         return (String) session.getAttribute("username");
     }
 
-    // ==================== 1, 2 y 3. BÚSQUEDAS ====================
-
+    // 1, 2 y 3. BUSQUEDAS
     @GetMapping("/buscar/nombre")
     public ResponseEntity<ApiResponse<?>> buscarPorNombre(@RequestParam String q, HttpSession session) {
         String username = validarCliente(session);
@@ -72,8 +71,7 @@ public class ClienteController {
         return ResponseEntity.ok(ApiResponse.ok("Busqueda por genero ID: " + id, data));
     }
 
-    // ==================== 4. ORDENAR CARTELERA (QuickSort A/D) ====================
-
+    // 4. ORDENAR CARTELERA (QuickSort A/D)
     @GetMapping("/cartelera/ordenar")
     public ResponseEntity<ApiResponse<?>> ordenarCartelera(
             @RequestParam String municipio,
@@ -90,8 +88,7 @@ public class ClienteController {
         return ResponseEntity.ok(ApiResponse.ok("Cartelera ordenada " + dir + " (QuickSort)", data));
     }
 
-    // ==================== 5. CONSULTAR PELÍCULA ====================
-
+    // 5. CONSULTAR PELICULA
     @GetMapping("/peliculas/{id}")
     public ResponseEntity<ApiResponse<?>> consultarPelicula(@PathVariable Integer id, HttpSession session) {
         String username = validarCliente(session);
@@ -102,8 +99,7 @@ public class ClienteController {
         return ResponseEntity.ok(ApiResponse.ok("** CONSUTA EXITOSA **", peliculaMapper.toPeliculaDetalle(p, horarios)));
     }
 
-    // ==================== 6. CONSULTAR CARTELERA ====================
-
+    // 6. CONSULTAR CARTELERA
     @GetMapping("/cartelera")
     public ResponseEntity<ApiResponse<?>> consultarCartelera(
             @RequestParam String municipio,
@@ -134,8 +130,7 @@ public class ClienteController {
         return ResponseEntity.ok(ApiResponse.ok("Cartelera por rango de fechas", data));
     }
 
-    // ==================== FLOYD - MUNICIPIOS CERCANOS ====================
-
+    // FLOYD - MUNICIPIOS CERCANOS
     @GetMapping("/floyd/cercanos")
     public ResponseEntity<ApiResponse<?>> municipiosCercanos(
             @RequestParam String estado,
@@ -183,23 +178,31 @@ public class ClienteController {
         return ResponseEntity.ok(ApiResponse.ok("Camino mas corto (Floyd + recursividad)", data));
     }
 
-    // ==================== HISTORIAL (Pila) ====================
-
+    // HISTORIAL (Pila)
     @GetMapping("/historial")
     public ResponseEntity<ApiResponse<?>> obtenerHistorial(HttpSession session) {
         String username = validarCliente(session);
-        List<HistorialNavegacionDTO> data = historialService.obtenerHistorial(username);
+
+        // Cambiamos el DTO por String para que coincida con el Servicio
+        List<String> data = historialService.obtenerHistorial(username);
+
         return ResponseEntity.ok(ApiResponse.ok("Historial de navegacion (Pila)", data));
     }
 
     @PostMapping("/historial/regresar")
     public ResponseEntity<ApiResponse<?>> regresar(HttpSession session) {
         String username = validarCliente(session);
-        HistorialNavegacionDTO anterior = historialService.regresar(username);
 
-        if (anterior == null) {
+        // Primero verificamos si el historial tiene elementos
+        List<String> historialActual = historialService.obtenerHistorial(username);
+
+        if (historialActual.isEmpty()) {
             return ResponseEntity.ok(ApiResponse.ok("** NO HAY ACCIONES ANTERIORES **"));
         }
-        return ResponseEntity.ok(ApiResponse.ok("Accion anterior recuperada", anterior));
+
+        // Usamos el método correcto que definimos en HistorialService (hace el POP a la pila)
+        historialService.deshacerUltimaAccion(username);
+
+        return ResponseEntity.ok(ApiResponse.ok("** ACCION ANTERIOR ELIMINADA DEL HISTORIAL EXITOSAMENTE **"));
     }
 }

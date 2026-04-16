@@ -5,11 +5,9 @@ import com.waxeados.CineWax.entity.HorarioCartelera;
 import java.util.List;
 
 /**
- * Implementación de QuickSort para ordenar la cartelera.
- * JUSTIFICACIÓN: Se usa QuickSort para ordenar la cartelera por fecha y hora
+ * Se usa QuickSort para ordenar la cartelera por fecha y hora
  * de forma ascendente o descendente, cumpliendo con el requerimiento de
- * "Ordenar Cartelera (A y D)". QuickSort es eficiente con O(n log n) promedio
- * y es ideal para ordenar listas medianas-grandes de horarios en memoria.
+ * "Ordenar Cartelera (A y D)"
  */
 public class QuickSort {
 
@@ -48,7 +46,7 @@ public class QuickSort {
     }
 
     /**
-     * Compara dos horarios primero por fecha, luego por hora de inicio.
+     * Compara dos horarios primero por fecha, luego por hora de inicio
      */
     private static int comparar(HorarioCartelera a, HorarioCartelera b) {
         int cmpFecha = a.getFechaProyeccion().compareTo(b.getFechaProyeccion());

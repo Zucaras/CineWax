@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Componente para convertir entre entidades Pelicula y sus respectivos DTOs.
+ * Componente para convertir entre entidades Pelicula y sus respectivos DTOs
  */
 @Component
 public class PeliculaMapper {

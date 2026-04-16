@@ -3,13 +3,12 @@ package com.waxeados.CineWax.structures;
 import java.util.*;
 
 /**
- * Implementación del algoritmo Floyd-Warshall.
- * JUSTIFICACIÓN: Se usa Floyd para calcular las distancias más cortas entre
+ * Se usa Floyd para calcular las distancias mas cortas entre
  * todos los municipios de un estado. Esto permite al sistema sugerir al cliente
- * en qué municipio cercano hay funciones disponibles si en el suyo no hay,
- * o para mostrar la ruta más corta entre municipios.
+ * en que municipio cercano hay funciones disponibles si en el suyo no hay,
+ * o para mostrar la ruta más corta entre municipios
  * Floyd es ideal porque necesitamos las distancias entre TODOS los pares de nodos
- * (todos-a-todos), no solo de un origen a los demás.
+ * , no solo de un origen a los demas
  */
 public class FloydWarshall {
 
@@ -22,7 +21,7 @@ public class FloydWarshall {
 
     /**
      * @param nodos lista de IDs de municipios
-     * @param distancias mapa de (origen, destino) -> peso. Se asume grafo no dirigido.
+     * @param distancias mapa de (origen, destino) -> peso. Se asume grafo no dirigido
      */
     public FloydWarshall(List<String> nodos, Map<String, Map<String, Integer>> distancias) {
         this.nodos = new ArrayList<>(nodos);
@@ -56,8 +55,7 @@ public class FloydWarshall {
     }
 
     /**
-     * Ejecuta el algoritmo Floyd-Warshall con triple bucle anidado.
-     * Complejidad: O(n^3)
+     * Ejecuta el algoritmo Floyd-Warshall con triple bucle anidado
      */
     private void ejecutarFloyd() {
         for (int k = 0; k < n; k++) {
@@ -73,7 +71,7 @@ public class FloydWarshall {
     }
 
     /**
-     * Obtiene la distancia más corta entre dos municipios.
+     * Obtiene la distancia mas corta entre dos municipios
      */
     public int getDistancia(String origen, String destino) {
         int i = nodos.indexOf(origen);
@@ -83,8 +81,8 @@ public class FloydWarshall {
     }
 
     /**
-     * Reconstruye el camino más corto entre dos municipios.
-     * Usa RECURSIVIDAD para reconstruir el path.
+     * Reconstruye el camino mas corto entre dos municipios
+     * Usa RECURSIVIDAD para reconstruir el path
      */
     public List<String> getCamino(String origen, String destino) {
         int i = nodos.indexOf(origen);
@@ -97,7 +95,7 @@ public class FloydWarshall {
     }
 
     /**
-     * Método recursivo para reconstruir el camino.
+     * Metodo recursivo para reconstruir el camino.
      */
     private void reconstruirCamino(int i, int j, List<String> camino) {
         if (i == j) {
@@ -110,7 +108,7 @@ public class FloydWarshall {
     }
 
     /**
-     * Devuelve los municipios más cercanos a uno dado, ordenados por distancia.
+     * Devuelve los municipios mas cercanos a uno dado, ordenados por distancia.
      */
     public List<Map.Entry<String, Integer>> getMunicipiosCercanos(String origen) {
         int i = nodos.indexOf(origen);
@@ -127,7 +125,7 @@ public class FloydWarshall {
     }
 
     /**
-     * Devuelve la matriz de distancias completa.
+     * Devuelve la matriz de distancias completa
      */
     public int[][] getMatrizDistancias() {
         return dist;

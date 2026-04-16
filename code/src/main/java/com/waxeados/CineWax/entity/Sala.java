@@ -28,7 +28,7 @@ public class Sala {
     @Column(name = "numero_sala", nullable = false)
     private Integer numeroSala;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_municipio", nullable = false)
     private Municipio municipio;
 

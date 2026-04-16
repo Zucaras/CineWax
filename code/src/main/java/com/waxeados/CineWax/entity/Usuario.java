@@ -33,8 +33,8 @@ public class Usuario {
     @Column(name = "rol_usuario", length = 20, nullable = false)
     private Rol rolUsuario;
 
-    // Municipio al que pertenece (solo relevante para ADMINISTRADOR)
-    @ManyToOne(fetch = FetchType.LAZY)
+    // Municipio al que pertenece (ADMINISTRADOR)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_municipio")
     private Municipio municipio;
 }

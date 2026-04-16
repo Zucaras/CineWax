@@ -20,6 +20,10 @@ configurations {
 	}
 }
 
+bootRun {
+    standardInput = System.in
+}
+
 repositories {
 	mavenCentral()
 }

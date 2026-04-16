@@ -35,7 +35,7 @@ public class Pelicula {
     @Column(name = "duracion_min", nullable = false)
     private Integer duracionMin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_genero", nullable = false)
     private Genero genero;
 

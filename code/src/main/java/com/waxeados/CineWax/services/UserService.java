@@ -20,7 +20,7 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     /**
-     * Registro de nuevo usuario.
+     * Registro de nuevo usuario
      */
     @Transactional
     public Usuario registrar(RegistroDTO dto) {
@@ -56,7 +56,7 @@ public class UserService {
     }
 
     /**
-     * Login: verifica credenciales y retorna el usuario.
+     * Login: verifica credenciales y retorna el usuario
      */
     public Usuario login(LoginDTO dto) {
         Usuario usuario = usuarioRepository.findByUsername(dto.getUsername())
@@ -70,7 +70,7 @@ public class UserService {
     }
 
     /**
-     * Obtener usuario por ID.
+     * Obtener usuario por ID
      */
     public Usuario obtenerPorId(Integer id) {
         return usuarioRepository.findById(id)
@@ -78,7 +78,7 @@ public class UserService {
     }
 
     /**
-     * Obtener usuario por username.
+     * Obtener usuario por username
      */
     public Usuario obtenerPorUsername(String username) {
         return usuarioRepository.findByUsername(username)

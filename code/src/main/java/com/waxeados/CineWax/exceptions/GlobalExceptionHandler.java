@@ -6,10 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-/**
- * Global exception handler to capture and format all application exceptions.
- * This eliminates the need for boilerplate try-catch blocks in the controllers.
- */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

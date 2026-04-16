@@ -24,8 +24,6 @@ public class AdminController {
     private final PeliculaService peliculaService;
     private final HorarioService horarioService;
     private final CatalogoService catalogoService;
-
-    // Inyectamos nuestros nuevos mappers
     private final PeliculaMapper peliculaMapper;
     private final HorarioMapper horarioMapper;
 
@@ -36,8 +34,7 @@ public class AdminController {
         }
     }
 
-    // ==================== 1. ALTA DE PELÍCULA ====================
-
+    // 1. ALTA DE PELICULA
     @PostMapping("/peliculas")
     public ResponseEntity<ApiResponse<?>> altaPelicula(@RequestBody PeliculaDTO dto, HttpSession session) {
         validarAdmin(session);
@@ -45,8 +42,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("** PELICULA CREADA EXITOSAMENTE **", peliculaMapper.toPeliculaResumen(p)));
     }
 
-    // ==================== 2. ALTA DE HORARIO ====================
-
+    // 2. ALTA DE HORARIO
     @PostMapping("/horarios")
     public ResponseEntity<ApiResponse<?>> altaHorario(@RequestBody HorarioDTO dto, HttpSession session) {
         validarAdmin(session);
@@ -69,8 +65,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("Cola procesada", resultados));
     }
 
-    // ==================== 3. BAJA DE PELÍCULA ====================
-
+    // 3. BAJA DE PELICULA
     @DeleteMapping("/peliculas/{id}")
     public ResponseEntity<ApiResponse<Void>> bajaPelicula(@PathVariable Integer id, HttpSession session) {
         validarAdmin(session);
@@ -78,8 +73,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("** PELICULA ELIMINADA EXITOSAMENTE **"));
     }
 
-    // ==================== 4. BAJA DE HORARIO ====================
-
+    // 4. BAJA DE HORARIO
     @DeleteMapping("/horarios/{id}")
     public ResponseEntity<ApiResponse<Void>> bajaHorario(@PathVariable Integer id, HttpSession session) {
         validarAdmin(session);
@@ -87,8 +81,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("** HORARIO ELIMINADO EXITOSAMENTE **"));
     }
 
-    // ==================== 5. MODIFICAR PELÍCULA ====================
-
+    // 5. MODIFICAR PELICULA
     @PutMapping("/peliculas/{id}")
     public ResponseEntity<ApiResponse<?>> modificarPelicula(@PathVariable Integer id, @RequestBody PeliculaDTO dto, HttpSession session) {
         validarAdmin(session);
@@ -96,8 +89,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("** PELICULA MODIFICADA EXITOSAMENTE", peliculaMapper.toPeliculaResumen(p)));
     }
 
-    // ==================== 6. CONSULTAR PELÍCULA ====================
-
+    // 6. CONSULTAR PELICULA
     @GetMapping("/peliculas/{id}")
     public ResponseEntity<ApiResponse<?>> consultarPelicula(@PathVariable Integer id, HttpSession session) {
         validarAdmin(session);
@@ -111,11 +103,10 @@ public class AdminController {
         validarAdmin(session);
         List<PeliculaResumenDTO> data = peliculaService.listarPeliculas().stream()
                 .map(peliculaMapper::toPeliculaResumen).toList();
-        return ResponseEntity.ok(ApiResponse.ok("Listado de películas", data));
+        return ResponseEntity.ok(ApiResponse.ok("Listado de peliculas", data));
     }
 
-    // ==================== 7. CONSULTAR CARTELERA ====================
-
+    // 7. CONSULTAR CARTELERA
     @GetMapping("/cartelera")
     public ResponseEntity<ApiResponse<?>> consultarCartelera(
             @RequestParam String municipio,
@@ -127,8 +118,7 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("Cartelera consultada", data));
     }
 
-    // ==================== SALAS ====================
-
+    // SALAS
     @GetMapping("/salas/{idMunicipio}")
     public ResponseEntity<ApiResponse<?>> listarSalas(@PathVariable String idMunicipio, HttpSession session) {
         validarAdmin(session);

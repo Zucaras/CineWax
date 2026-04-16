@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Servicio de catálogos: estados, municipios, géneros, salas.
+ * Servicio de catqlogos: estados, municipios, generos, salas.
  */
 @Service
 @RequiredArgsConstructor
@@ -22,33 +22,33 @@ public class CatalogoService {
     private final GeneroRepository generoRepository;
     private final SalaRepository salaRepository;
 
-    /** Listar todos los estados. */
+    /** Listar todos los estados */
     public List<Estado> listarEstados() {
         return estadoRepository.findAll();
     }
 
-    /** Listar municipios de un estado. */
+    /** Listar municipios de un estado */
     public List<Municipio> listarMunicipios(String idEstado) {
         return municipioRepository.findByEstado_IdEstado(idEstado);
     }
 
-    /** Listar todos los géneros. */
+    /** Listar todos los generos */
     public List<Genero> listarGeneros() {
         return generoRepository.findAll();
     }
 
-    /** Listar salas de un municipio. */
+    /** Listar salas de un municipio */
     public List<Sala> listarSalas(String idMunicipio) {
         return salaRepository.findByMunicipio_IdMunicipio(idMunicipio);
     }
 
-    /** Obtener un estado por ID. */
+    /** Obtener un estado por ID */
     public Estado obtenerEstado(String idEstado) {
         return estadoRepository.findById(idEstado)
                 .orElseThrow(() -> new IllegalArgumentException("** ESTADO NO ENCONTRADO **"));
     }
 
-    /** Obtener un municipio por ID. */
+    /** Obtener un municipio por ID */
     public Municipio obtenerMunicipio(String idMunicipio) {
         return municipioRepository.findById(idMunicipio)
                 .orElseThrow(() -> new IllegalArgumentException("** MUNICIPIO NO ENCONTRADO **"));
