@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Servicio principal de peliculas
@@ -73,27 +75,66 @@ public class PeliculaService {
      * Se pueden modificar todos los campos excepto los horarios.
      */
     @Transactional
-    public Pelicula modificarPelicula(Integer idPelicula, PeliculaDTO dto) {
-        Pelicula pelicula = peliculaRepository.findById(idPelicula)
-                .orElseThrow(() -> new IllegalArgumentException("** PELICULA NO ENCONTRADA CON ID: " + idPelicula + " **"));
+    public Pelicula modificarPelicula(int id, PeliculaDTO dto) {
+        Pelicula p = peliculaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pelicula no encontrada con ID: " + id));
 
-        // Verificar que el nuevo nombre no colisione con otra pelicula
-        if (!pelicula.getNombre().equalsIgnoreCase(dto.getNombre())
-                && peliculaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
-            throw new IllegalArgumentException("** YA EXISTE UNA PELICULA CON EL NOMBRE: " + dto.getNombre()+ " **");
+        // 1. VERIFICAR SI LA DURACIÓN CAMBIÓ
+        if (!Objects.equals(p.getDuracionMin(), dto.getDuracionMin())) {
+
+            // Traemos todos los horarios donde se proyecta esta película
+            List<HorarioCartelera> horariosAfectados = horarioRepository.findByPelicula_IdPelicula(id);
+
+            for (HorarioCartelera horario : horariosAfectados) {
+                // Calculamos la nueva hora de fin (Duración nueva + 30 min de limpieza)
+                LocalTime nuevaHoraFin = horario.getHoraInicio()
+                        .plusMinutes(dto.getDuracionMin())
+                        .plusMinutes(30);
+
+                // Traemos todos los horarios de ESA SALA en ESA FECHA para revisar empalmes
+                List<HorarioCartelera> horariosEnSala = horarioRepository
+                        .findBySalaAndFecha(horario.getSala().getIdSala(), horario.getFechaProyeccion());
+
+                for (HorarioCartelera otroHorario : horariosEnSala) {
+                    // Omitimos compararlo contra sí mismo
+                    if (otroHorario.getIdHorario().equals(horario.getIdHorario())) {
+                        continue;
+                    }
+
+                    // Fórmula matemática para detectar empalmes de tiempo: (InicioA < FinB) y (FinA > InicioB)
+                    boolean hayEmpalme = horario.getHoraInicio().isBefore(otroHorario.getHoraFinEstimada())
+                            && nuevaHoraFin.isAfter(otroHorario.getHoraInicio());
+
+                    if (hayEmpalme) {
+                        throw new IllegalArgumentException(
+                                "No se puede cambiar la duracion a " + dto.getDuracionMin() + " min. " +
+                                        "Causa un empalme el dia " + horario.getFechaProyeccion() +
+                                        " en la Sala " + horario.getSala().getNumeroSala() +
+                                        " con la funcion '" + otroHorario.getPelicula().getNombre() + "'.");
+                    }
+                }
+
+                // Si no chocó con ninguna otra película, le actualizamos su nueva hora de fin
+                horario.setHoraFinEstimada(nuevaHoraFin);
+            }
+
+            // Guardamos todos los horarios actualizados de un jalón
+            horarioRepository.saveAll(horariosAfectados);
         }
 
-        Genero genero = generoRepository.findById(dto.getIdGenero())
-                .orElseThrow(() -> new IllegalArgumentException("** GENERO NO ENCONTRADO CON ID: " + dto.getIdGenero()+ " **"));
+        // 2. ACTUALIZAR LOS DEMÁS DATOS DE LA PELÍCULA
+        p.setNombre(dto.getNombre());
+        p.setDirector(dto.getDirector());
+        p.setProductor(dto.getProductor());
+        p.setClasificacion(dto.getClasificacion());
+        p.setDuracionMin(dto.getDuracionMin());
 
-        pelicula.setNombre(dto.getNombre());
-        pelicula.setDirector(dto.getDirector());
-        pelicula.setProductor(dto.getProductor());
-        pelicula.setClasificacion(dto.getClasificacion().toUpperCase());
-        pelicula.setDuracionMin(dto.getDuracionMin());
-        pelicula.setGenero(genero);
+        // Buscar y asignar el nuevo género
+        Genero g = generoRepository.findById(dto.getIdGenero())
+                .orElseThrow(() -> new IllegalArgumentException("Genero no encontrado"));
+        p.setGenero(g);
 
-        return peliculaRepository.save(pelicula);
+        return peliculaRepository.save(p);
     }
 
     // CONSULTAR
