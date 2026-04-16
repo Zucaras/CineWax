@@ -34,7 +34,7 @@ public class DataSeeder implements CommandLineRunner {
                 // Ejecuta el script data.sql ubicado de forma segura
                 ScriptUtils.executeSqlScript(
                         connection,
-                        new ClassPathResource("data.sql")
+                        new ClassPathResource("static/data.sql")
                 );
                 System.out.println("Base de datos poblada exitosamente.\n");
             } catch (Exception e) {
